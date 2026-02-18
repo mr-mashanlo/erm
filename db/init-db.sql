@@ -1,0 +1,18 @@
+CREATE TABLE departments(
+  id INT PRIMARY KEY IDENTITY(1, 1),
+  name NVARCHAR(100) NOT NULL,
+  address NVARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE employees(
+  id INT PRIMARY KEY IDENTITY(1, 1),
+  name NVARCHAR(100) NOT NULL,
+  departmentId INT REFERENCES departments(id) ON DELETE SET NULL,
+);
+
+CREATE TABLE assets(
+  id INT PRIMARY KEY IDENTITY(1, 1),
+  name NVARCHAR(100) NOT NULL,
+  serialNumber NVARCHAR(100) NOT NULL,
+  employeeId INT REFERENCES employees(id) ON DELETE SET NULL,
+);

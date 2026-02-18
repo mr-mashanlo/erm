@@ -1,0 +1,68 @@
+@use 'variables'
+
+@use '../../../../node_modules/bulma/sass/themes/setup' as setup
+@use '../../../../node_modules/bulma/sass/themes/light' as light
+@use '../../../../node_modules/bulma/sass/base/index' as basic
+
+@use '../../../../node_modules/bulma/sass/helpers/spacing' as spacing
+@use '../../../../node_modules/bulma/sass/helpers/typography' as typography
+@use '../../../../node_modules/bulma/sass/elements/box' as box
+@use '../../../../node_modules/bulma/sass/elements/block' as block
+@use '../../../../node_modules/bulma/sass/elements/table' as table
+@use '../../../../node_modules/bulma/sass/elements/button' as button
+@use '../../../../node_modules/bulma/sass/components/pagination' as pagination
+@use '../../../../node_modules/bulma/sass/components/modal' as modal
+
+@use '../../../../node_modules/bulma/sass/form/shared' as input
+@use '../../../../node_modules/bulma/sass/form/select' as select
+@use '../../../../node_modules/bulma/sass/form/input-textarea' as textarea
+@use '../../../../node_modules/bulma/sass/form/tools' as tools
+
+:root
+  @include light.light-theme
+  @include setup.setup-theme
+
+:root
+  --bulma-control-size: calc(100vw / 375 * 16)
+  --bulma-pagination-item-font-size: calc(100vw / 375 * 16)
+  @media ( variables.$screen-sm )
+    --bulma-control-size: calc(100vw / 1024 * 16)
+    --bulma-pagination-item-font-size: calc(100vw / 1024 * 16)
+  @media ( variables.$screen-lg )
+    --bulma-control-size: calc(100vw / 1440 * 16)
+    --bulma-pagination-item-font-size: calc(100vw / 1440 * 16)
+  @media ( variables.$screen-xxl )
+    --bulma-control-size: 1rem
+    --bulma-pagination-item-font-size: 1rem
+
+.pagination
+  --bulma-pagination-item-font-size: calc(100vw / 375 * 16)
+  @media ( variables.$screen-sm )
+    --bulma-pagination-item-font-size: calc(100vw / 1024 * 16)
+  @media ( variables.$screen-lg )
+    --bulma-pagination-item-font-size: calc(100vw / 1440 * 16)
+  @media ( variables.$screen-xxl )
+    --bulma-pagination-item-font-size: 1rem
+
+.modal
+  --bulma-modal-content-width: 30rem
+  --bulma-modal-card-head-padding: calc(100vw / 375 * 16)
+  --bulma-modal-card-body-padding: calc(100vw / 375 * 16)
+  @media ( variables.$screen-sm )
+    --bulma-modal-card-head-padding: calc(100vw / 1024 * 16)
+    --bulma-modal-card-body-padding: calc(100vw / 1024 * 16)
+  @media ( variables.$screen-lg )
+    --bulma-modal-card-head-padding: calc(100vw / 1440 * 16)
+    --bulma-modal-card-body-padding: calc(100vw / 1440 * 16)
+  @media ( variables.$screen-xxl )
+  --bulma-modal-card-head-padding: 1rem
+  --bulma-modal-card-body-padding: 1rem
+
+.select select
+  font-size: calc(100vw / 375 * 16)
+  @media ( variables.$screen-sm )
+    font-size: calc(100vw / 1024 * 16)
+  @media ( variables.$screen-lg )
+    font-size: calc(100vw / 1440 * 16)
+  @media ( variables.$screen-xxl )
+    font-size: 1rem

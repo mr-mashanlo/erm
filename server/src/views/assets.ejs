@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <title>Assets</title>
+    <meta name="title" content="@@title">
+    <meta name="description" content="@@description">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@@title">
+    <meta property="og:description" content="@@description">
+    <meta property="og:image" content="@@image">
+    <meta property="og:url" content="@@url">
+    <meta name="twitter:image" content="@@image">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/images/favicon.svg" sizes="32x32">
+    <link rel="apple-touch-icon" href="/images/favicon.svg">
+    <link rel="stylesheet" href="/css/main.css">
+  </head>
+
+  <body>
+    <%- include('includes/header'); %>
+
+    <section class="p-4 sm:p-10">
+      <div class="border border-zinc-200 rounded-md">
+        <div class="p-3 flex sm:items-center justify-between gap-3 flex-col sm:flex-row">
+          <h3 class="text-sm font-black">Assets <span aria-hidden="true" class="text-zinc-300"><%= assets.total %></span></h3>
+          <div class="w-full sm:w-auto flex items-center gap-3">
+            <%- include('includes/search-form'); %>
+            <button onclick="create_modal.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Create</button>
+            <dialog id="create_modal" class="modal">
+              <%- include('includes/create-asset-form', { employees: employees.data }); %>
+              <form method="dialog" class="modal-backdrop"><button>close</button></form>
+            </dialog>
+          </div> 
+        </div>
+        <div class="overflow-auto">
+          <table class="w-full min-w-3xl text-left table-fixed">
+            <thead>
+              <tr class="border-t border-zinc-200">
+                <th class="p-3">
+                  <a href="<%= buildUrl({ sort: 'name', order: query.order === 'asc' ? 'desc' : 'asc' }) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                    <span>Name</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </a>
+                </th>
+                <th class="p-3">
+                  <a href="<%= buildUrl({ sort: 'serialNumber', order: query.order === 'asc' ? 'desc' : 'asc' }) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                    <span>Serial number</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </a>
+                </th>
+                <th class="w-33 p-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% assets.data.forEach( asset => { %>
+                <tr class="border-t border-zinc-200">
+                  <td class="p-3"><%= asset.name %></td>
+                  <td class="p-3"><%= asset.serialNumber %></td>
+                  <td class="p-3">
+                    <div class="inline-flex items-center">
+                      <button onclick="window['edit_modal_<%= asset.id %>'].showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
+                      <dialog id="edit_modal_<%= asset.id %>" class="modal">
+                        <%- include('includes/update-asset-form', { asset, employees: employees.data }); %>
+                        <form method="dialog" class="modal-backdrop"><button>close</button></form>
+                      </dialog>
+                      <button onclick="window['delete_modal_<%= asset.id %>'].showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Delete</button>
+                      <dialog id="delete_modal_<%= asset.id %>" class="modal">
+                        <%- include('includes/delete-asset-form', { asset }); %>
+                        <form method="dialog" class="modal-backdrop"><button>close</button></form>
+                      </dialog>
+                    </div>
+                  </td>
+                </tr>
+              <% } ); %>
+            </tbody>
+          </table>
+        </div>
+        <%- include('includes/pagination', { limit: assets.limit, page: assets.page, total: assets.total }); %>
+      </div>
+    </section>
+  </body>
+
+</html>

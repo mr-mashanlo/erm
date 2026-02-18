@@ -1,0 +1,22 @@
+<div class="p-3 border-t border-zinc-200 flex items-center justify-between gap-3">
+  <div class="flex items-center gap-3">
+    <%
+      const pagination = 3;
+      const paginationTotal = Math.ceil( total / limit );
+      const coefficient = Math.ceil( page / pagination );
+      const start = coefficient * pagination - pagination;
+      const end = coefficient * pagination;
+    %>
+    <% Array.from({ length: paginationTotal }, ( _, i ) => i + 1 ).slice( start, end ).forEach( ( v ) => { %>
+      <a href="<%= buildUrl({ page: v }) %>" class="w-8 p-1.5 text-center border border-zinc-200 rounded-md cursor-pointer <%= query.page == v ? 'bg-zinc-200' : 'bg-zinc-100' %>"><%= v %></a>
+    <% } ); %>
+  </div>
+  <div class="flex items-center gap-3">
+    <% if (page > 1) { %>
+      <a href="<%= buildUrl({ page: page - 1 }) %>" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Prev</a>
+    <% } %>
+    <% if (page < paginationTotal) { %>
+      <a href="<%= buildUrl({ page: page + 1 }) %>" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Next</a>
+    <% } %>
+  </div>
+</div>
