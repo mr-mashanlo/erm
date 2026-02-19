@@ -1,19 +1,25 @@
 @use 'variables'
 
-:root
-  --scale: calc(100vw / 375 * 12)
+html
+  font-size: calc(100vw / 375 * 16)
   @media ( min-width: variables.$sm + 1px )
-    --scale: calc(100vw / 1024 * 12)
+    font-size: calc(100vw / 1024 * 16)
   @media ( min-width: variables.$lg + 1px )
-    --scale: calc(100vw / 1440 * 12)
+    font-size: calc(100vw / 1440 * 16)
   @media ( min-width: variables.$xxl + 1px )
-    --scale: .875rem
+    font-size: 1rem
 
 body
-  font-size: var(--scale)
   font-family: 'Roboto', sans-serif
 
 select
   appearance: none
   -webkit-appearance: none
   -moz-appearance: none
+
+.form__error
+  margin-top: .25rem
+  font-size: .625rem
+  position: absolute
+  top: 100%
+  right: 0

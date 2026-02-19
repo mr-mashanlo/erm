@@ -23,13 +23,14 @@
     <script src="dist/js/main.js" defer></script>
   </head>
 
-  <body>
+  <body class="text-xs">
     <header class="p-4 sm:px-10 sm:py-6 border-b border-zinc-200">
       <nav>
         <ul class="flex items-center gap-8">
           <li><a href="/employees.html">Employees</a></li>
           <li><a href="/departments.html">Departments</a></li>
           <li><a href="/assets.html">Assets</a></li>
+          <li><a href="/signin.html">Sign in</a></li>
         </ul>
       </nav>
     </header>
@@ -40,9 +41,12 @@
           <h3 class="text-sm font-black">Employees <span aria-hidden="true" class="text-zinc-300">20</span></h3>
           <div class="w-full sm:w-auto flex items-center gap-3">
             <form class="search-form w-full flex items-center">
-              <div class="w-full">
+              <div class="w-full relative">
                 <label for="query" class="sr-only">Search employees</label>
                 <input id="query" name="query" type="text" placeholder="Jane" class="w-full px-3 py-1.5 border border-zinc-200 bg-white rounded-s-md relative focus-visible:z-10" />
+                <a href="#" class="p-1 absolute top-1/2 -right-1 -translate-1/2 bg-amber-30043">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-2 h-2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </a>
               </div>
               <div>
                 <button type="submit" class="px-3 py-1.5 border border-zinc-200 border-l-0 bg-zinc-100 rounded-e-md cursor-pointer relative focus-visible:z-10">Search</button>
@@ -50,7 +54,7 @@
             </form>
             <button onclick="create_modal.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Create</button>
             <dialog id="create_modal" class="modal">
-              <div class="modal-box">
+              <div class="modal-box max-w-md">
                 <h3 class="text-lg font-bold">Create employee</h3>
                 <form class="mt-4">
                   <div class="w-full">
@@ -84,19 +88,19 @@
           <table class="w-full min-w-3xl text-left table-fixed">
             <thead>
               <tr class="border-t border-zinc-200">
-                <th class="p-3">
+                <th class="px-3 py-4.5">
                   <a class="inline-flex items-center gap-1 cursor-pointer">
                     <span>Name</span>
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
                   </a>
                 </th>
-                <th class="p-3">
+                <th class="px-3 py-4.5">
                   <a class="inline-flex items-center gap-1 cursor-pointer">
                     <span>Departament</span>
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
                   </a>
                 </th>
-                <th class="w-33 p-3"></th>
+                <th class="w-32 px-3 py-4.5"></th>
               </tr>
             </thead>
             <tbody>
@@ -105,8 +109,8 @@
                 <td class="p-3">Quality Control Specialist</td>
                 <td class="p-3">
                   <div class="inline-flex items-center">
-                    <button onclick="edit_modal.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
-                    <dialog id="edit_modal" class="modal">
+                    <button onclick="edit_modal_1.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
+                    <dialog id="edit_modal_1" class="modal">
                       <div class="modal-box">
                         <h3 class="text-lg font-bold">Edit employee</h3>
                         <form class="mt-4">
@@ -135,8 +139,8 @@
                         <button>close</button>
                       </form>
                     </dialog>
-                    <button onclick="delete_modal.showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Delete</button>
-                    <dialog id="delete_modal" class="modal">
+                    <button onclick="delete_modal_1.showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Delete</button>
+                    <dialog id="delete_modal_1" class="modal">
                       <div class="modal-box">
                         <h3 class="text-lg font-bold">Delete employee</h3>
                         <p class="mt-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, omnis.</p>
@@ -159,38 +163,114 @@
               <tr class="border-t border-zinc-200">
                 <td class="p-3"><a href="#" class="hover:underline">Hart Hagerty</a></td>
                 <td class="p-3">Desktop Support Technician</td>
+                <td class="p-3">
+                  <div class="inline-flex items-center">
+                    <button onclick="edit_modal_2.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
+                    <dialog id="edit_modal_2" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Edit employee</h3>
+                        <form class="mt-4">
+                          <div class="w-full">
+                            <label for="name" class="inline-block mb-1 font-bold">Name</label>
+                            <input id="name" type="text" placeholder="Jane" class="w-full px-3 py-1.5 border border-zinc-200 bg-white rounded-md relative focus-visible:z-10" />
+                          </div>
+                          <div class="mt-4 w-full">
+                            <label for="department" class="inline-block mb-1 font-bold">Department</label>
+                            <div class="relative">
+                              <select id="department" class="w-full px-3 py-1.5 border border-zinc-200 bg-white rounded-md">
+                                <option value="1">Quality Control Specialist</option>
+                                <option value="1">Quality Control Specialist</option>
+                                <option value="1">Quality Control Specialist</option>
+                                <option value="1">Quality Control Specialist</option>
+                              </select>
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 right-1 -translate-1/2"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                          </div>
+                          <div class="mt-6">
+                            <button class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                    <button onclick="delete_modal_2.showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Delete</button>
+                    <dialog id="delete_modal_2" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Delete employee</h3>
+                        <p class="mt-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, omnis.</p>
+                        <div class="mt-5 flex items-center gap-3">
+                          <form method="delete" action="/employees/1">
+                            <button type="submit" class="px-3 py-1.5 text-red-500 border border-red-200 bg-red-100 rounded-md cursor-pointer">Delete</button>
+                          </form>
+                          <form method="dialog">
+                            <button class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Close</button>
+                          </form>
+                        </div>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                </td>
               </tr>
               <tr class="border-t border-zinc-200">
                 <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
                 <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
-              </tr>
-              <tr class="border-t border-zinc-200">
-                <td class="p-3"><a href="#" class="hover:underline">Brice Swyre</a></td>
-                <td class="p-3">Tax Accountant</td>
+                <td class="p-3">
+                  <div class="inline-flex items-center">
+                    <button onclick="edit_modal_1.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
+                    <dialog id="edit_modal_1" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Edit employee</h3>
+                        <form class="mt-4">
+                          <div class="w-full">
+                            <label for="name" class="inline-block mb-1 font-bold">Name</label>
+                            <input id="name" type="text" placeholder="Jane" class="w-full px-3 py-1.5 border border-zinc-200 bg-white rounded-md relative focus-visible:z-10" />
+                          </div>
+                          <div class="mt-4 w-full">
+                            <label for="department" class="inline-block mb-1 font-bold">Department</label>
+                            <div class="relative">
+                              <select id="department" class="w-full px-3 py-1.5 border border-zinc-200 bg-white rounded-md">
+                                <option value="1">Quality Control Specialist</option>
+                                <option value="1">Quality Control Specialist</option>
+                                <option value="1">Quality Control Specialist</option>
+                                <option value="1">Quality Control Specialist</option>
+                              </select>
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 right-1 -translate-1/2"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                          </div>
+                          <div class="mt-6">
+                            <button class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                    <button onclick="delete_modal_1.showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Delete</button>
+                    <dialog id="delete_modal_1" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Delete employee</h3>
+                        <p class="mt-3">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, omnis.</p>
+                        <div class="mt-5 flex items-center gap-3">
+                          <form method="delete" action="/employees/1">
+                            <button type="submit" class="px-3 py-1.5 text-red-500 border border-red-200 bg-red-100 rounded-md cursor-pointer">Delete</button>
+                          </form>
+                          <form method="dialog">
+                            <button class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Close</button>
+                          </form>
+                        </div>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
