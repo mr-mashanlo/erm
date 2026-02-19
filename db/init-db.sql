@@ -1,16 +1,25 @@
-CREATE TABLE departments(
+CREATE TABLE users (
+  id INT PRIMARY KEY IDENTITY(1, 1),
+  email NVARCHAR(100) UNIQUE NOT NULL,
+  password NVARCHAR(100) NOT NULL,
+  role NVARCHAR(50) NOT NULL,
+  refreshToken NVARCHAR(100),
+  expiredAt INT,
+);
+
+CREATE TABLE departments (
   id INT PRIMARY KEY IDENTITY(1, 1),
   name NVARCHAR(100) NOT NULL,
   address NVARCHAR(100) NOT NULL,
 );
 
-CREATE TABLE employees(
+CREATE TABLE employees (
   id INT PRIMARY KEY IDENTITY(1, 1),
   name NVARCHAR(100) NOT NULL,
   departmentId INT REFERENCES departments(id) ON DELETE SET NULL,
 );
 
-CREATE TABLE assets(
+CREATE TABLE assets (
   id INT PRIMARY KEY IDENTITY(1, 1),
   name NVARCHAR(100) NOT NULL,
   serialNumber NVARCHAR(100) NOT NULL,
