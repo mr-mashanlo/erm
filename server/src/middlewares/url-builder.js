@@ -6,14 +6,14 @@ export const urlBuilder = ( req, res, next ) => {
 
     for ( const key in params ) {
       const value = params[key];
-      if ( value === null || value === undefined || value === '' ) {
-        currentParams.delete( key );
-      } else {
+      if ( value ) {
         currentParams.set( key, value );
+        return '?' + currentParams.toString();
+      } else {
+        currentParams.delete( key );
+        return '?' + currentParams.toString();
       }
     }
-
-    return currentParams.toString() ? `?${currentParams.toString()}` : '';
   };
 
   next();
