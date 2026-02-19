@@ -10,6 +10,8 @@ import { errorHandler } from './middlewares/error-handler.js';
 import { urlBuilder } from './middlewares/url-builder.js';
 import { assetApiRouter } from './modules/assets/api/asset-router.js';
 import { assetWebRouter } from './modules/assets/web/asset-router.js';
+import { authApiRouter } from './modules/auth/api/auth-router.js';
+import { authWebRouter } from './modules/auth/web/auth-router.js';
 import { departmentApiRouter } from './modules/departments/api/department-router.js';
 import { departmentWebRouter } from './modules/departments/web/department-router.js';
 import { employeeApiRouter } from './modules/employees/api/employee-router.js';
@@ -19,7 +21,7 @@ const app = express();
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 
-app.use( cors( { credentials: true } ) );
+app.use( cors( { credentials: true, origin: process.env.FRONT_URL } ) );
 app.use( cookieParser() );
 app.use( express.json() );
 app.use( express.urlencoded( { extended: true } ) );
@@ -31,6 +33,9 @@ app.set( 'view engine', 'ejs' );
 app.use( urlBuilder );
 
 app.get( '/', ( req, res ) => res.render( 'index' ) );
+
+app.use( '/api/auth', authApiRouter );
+app.use( '/auth', authWebRouter );
 
 app.use( '/api/employees', employeeApiRouter );
 app.use( '/employees', employeeWebRouter );
