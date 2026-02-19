@@ -33,7 +33,7 @@ export class EmployeeWebController {
     }
   };
 
-  employees = async ( req, res, next ) => {
+  showEmployees = async ( req, res, next ) => {
     try {
       const employees = await this.employeeService.getAllEmployees( {
         search: req.query.search,
@@ -50,7 +50,7 @@ export class EmployeeWebController {
     }
   };
 
-  employee = async ( req, res, next ) => {
+  showEmployee = async ( req, res, next ) => {
     try {
       const employee = await this.employeeService.getEmployeeById( req.params.id );
       res.render( 'employees', { employee } );
@@ -59,7 +59,7 @@ export class EmployeeWebController {
     }
   };
 
-  assets = async ( req, res, next ) => {
+  showEmployeeAssets = async ( req, res, next ) => {
     try {
       const assets = await this.assetService.getAllAssets( {
         search: req.query.search,

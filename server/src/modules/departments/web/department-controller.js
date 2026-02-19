@@ -31,7 +31,7 @@ export class DepartmentWebController {
     }
   };
 
-  departments = async ( req, res, next ) => {
+  showDepartments = async ( req, res, next ) => {
     try {
       const departments = await this.departmentService.getAllDepartments( {
         search: req.query.search,
@@ -47,7 +47,7 @@ export class DepartmentWebController {
     }
   };
 
-  department = async ( req, res, next ) => {
+  showDepartment = async ( req, res, next ) => {
     try {
       const department = await this.departmentService.getDepartmentById( req.params.id );
       res.render( 'departments', { department } );

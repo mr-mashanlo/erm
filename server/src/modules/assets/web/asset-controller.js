@@ -32,7 +32,7 @@ export class AssetWebController {
     }
   };
 
-  assets = async ( req, res, next ) => {
+  showAssets = async ( req, res, next ) => {
     try {
       const assets = await this.assetService.getAllAssets( {
         search: req.query.search,
@@ -50,7 +50,7 @@ export class AssetWebController {
     }
   };
 
-  asset = async ( req, res, next ) => {
+  showAsset = async ( req, res, next ) => {
     try {
       const asset = await this.assetService.getAssetById( req.params.id );
       res.render( 'assets', { asset } );
