@@ -32,11 +32,6 @@
           <h3 class="text-sm font-black">Employees <span aria-hidden="true" class="text-zinc-300"><%= employees.total %></span></h3>
           <div class="w-full sm:w-auto flex items-center gap-3">
             <%- include('includes/search-form'); %>
-            <button onclick="create_modal.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Create</button>
-            <dialog id="create_modal" class="modal">
-              <%- include('includes/create-employee-form', { departments: departments.data }); %>
-              <form method="dialog" class="modal-backdrop"><button>close</button></form>
-            </dialog>
           </div>
         </div>
         <div class="overflow-auto">
