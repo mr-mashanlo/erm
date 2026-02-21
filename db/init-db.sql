@@ -17,6 +17,7 @@ CREATE TABLE employees (
   id INT PRIMARY KEY IDENTITY(1, 1),
   name NVARCHAR(100) NOT NULL,
   departmentId INT REFERENCES departments(id) ON DELETE SET NULL,
+  userId INT REFERENCES users(id) NOT NULL,
 );
 
 CREATE TABLE assets (
