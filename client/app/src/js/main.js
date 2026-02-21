@@ -1,5 +1,8 @@
-import { initAuthFormValidator } from './validator';
+import { assetFormValidator, departamentFormValidator, signinFormValidator, signupFormValidator } from './validator';
 
 window.addEventListener( 'DOMContentLoaded', () => {
-  initAuthFormValidator();
+  assetFormValidator();
+  departamentFormValidator();
+  signinFormValidator();
+  signupFormValidator();
 } );
