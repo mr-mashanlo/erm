@@ -45,6 +45,10 @@ export class EmployeeService {
     return await this.employeeRepository.findById( id );
   };
 
+  getEmployeeByUserId = async id => {
+    return await this.employeeRepository.findByUserId( id );
+  };
+
   updateEmployee = async ( id, employee ) => {
     return await this.employeeRepository.update( id, employee );
   };

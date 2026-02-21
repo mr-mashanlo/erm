@@ -44,7 +44,44 @@ export class AssetWebController {
         sort: req.query.sort
       } );
       const employees = await this.employeeService.getAllEmployees( { limit: '0' } );
-      res.render( 'assets', { assets, employees } );
+      res.render( 'assets', { assets, employees, user: req.user || {} } );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
+  showMyAssets = async ( req, res, next ) => {
+    try {
+      const employee = await this.employeeService.getEmployeeByUserId( req.user.id );
+      const assets = await this.assetService.getAllAssets( {
+        search: req.query.search,
+        serialNumber: req.query.serialNumber,
+        employee: employee.id,
+        limit: req.query.limit,
+        order: req.query.order,
+        page: req.query.page,
+        sort: req.query.sort
+      } );
+      const employees = await this.employeeService.getAllEmployees( { limit: '0' } );
+      res.render( 'assets', { assets, employees, user: req.user || {} } );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
+  showEmployeeAssets = async ( req, res, next ) => {
+    try {
+      const assets = await this.assetService.getAllAssets( {
+        search: req.query.search,
+        serialNumber: req.query.serialNumber,
+        employee: req.params.id,
+        limit: req.query.limit,
+        order: req.query.order,
+        page: req.query.page,
+        sort: req.query.sort
+      } );
+      const employees = await this.employeeService.getAllEmployees( { limit: '0' } );
+      res.render( 'assets', { assets, employees, user: req.user || {} } );
     } catch ( error ) {
       next( error );
     }
@@ -53,7 +90,7 @@ export class AssetWebController {
   showAsset = async ( req, res, next ) => {
     try {
       const asset = await this.assetService.getAssetById( req.params.id );
-      res.render( 'assets', { asset } );
+      res.render( 'assets', { asset, user: req.user || {} } );
     } catch ( error ) {
       next( error );
     }

@@ -1,14 +1,17 @@
 import { Router } from 'express';
 
 import { validate } from '../../../middlewares/validate.js';
-import { authWebController } from '../auth-container.js';
-import { AuthSchema } from '../auth-schema.js';
+import { departmentService } from '../../departments/department-container.js';
+import { authService } from '../auth-container.js';
+import { SigninSchema, SignupSchema } from '../auth-schema.js';
+import { AuthWebController } from './auth-controller.js';
 
 const router = Router();
+const authWebController = new AuthWebController( authService, departmentService );
 
-router.get( '/signin', authWebController.showSignin );
-router.post( '/signin', validate( AuthSchema ), authWebController.signin );
-router.get( '/signup', authWebController.showSignup );
-router.post( '/signup', validate( AuthSchema ), authWebController.signup );
+router.get( '/auth/signin', authWebController.showSignin );
+router.post( '/auth/signin', validate( SigninSchema ), authWebController.signin );
+router.get( '/auth/signup', authWebController.showSignup );
+router.post( '/auth/signup', validate( SignupSchema ), authWebController.signup );
 
 export { router as authWebRouter };

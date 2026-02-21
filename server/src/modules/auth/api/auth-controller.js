@@ -8,7 +8,7 @@ export class AuthApiController {
     try {
       const { user, accessToken, refreshToken } = await this.authService.signin( req.body );
       res.cookie( 'accessToken', accessToken, { maxAge: process.env.COOKIE_ACCESS_TIME, httpOnly: true, sameSite: 'none', secure: true } );
-      res.cookie( 'refreshToken', refreshToken, { maxAge: process.env.COOKIE_ACCESS_TIME, httpOnly: true, sameSite: 'none', secure: true } );
+      res.cookie( 'refreshToken', refreshToken, { maxAge: process.env.COOKIE_REFRESH_TIME, httpOnly: true, sameSite: 'none', secure: true } );
       res.json( { id: user.id, accessToken } );
     } catch ( error ) {
       next( error );
@@ -19,7 +19,7 @@ export class AuthApiController {
     try {
       const { user, accessToken, refreshToken } = await this.authService.signup( req.body );
       res.cookie( 'accessToken', accessToken, { maxAge: process.env.COOKIE_ACCESS_TIME, httpOnly: true, sameSite: 'none', secure: true } );
-      res.cookie( 'refreshToken', refreshToken, { maxAge: process.env.COOKIE_ACCESS_TIME, httpOnly: true, sameSite: 'none', secure: true } );
+      res.cookie( 'refreshToken', refreshToken, { maxAge: process.env.COOKIE_REFRESH_TIME, httpOnly: true, sameSite: 'none', secure: true } );
       res.json( { id: user.id, accessToken } );
     } catch ( error ) {
       next( error );

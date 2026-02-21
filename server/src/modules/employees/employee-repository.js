@@ -25,13 +25,14 @@ export class EmployeeRepository {
     return result.recordset[0].total;
   };
 
-  create = async ( { name, departmentId } ) => {
+  create = async ( { name, departmentId, userId } ) => {
     const pool = await this.db.poolPromise;
 
     const result = await pool.request()
       .input( 'name', this.db.sql.NVarChar, name )
       .input( 'departmentId', this.db.sql.Int, departmentId )
-      .query( 'INSERT INTO employees (name, departmentId) OUTPUT inserted.* VALUES (@name, @departmentId)' );
+      .input( 'userId', this.db.sql.Int, userId )
+      .query( 'INSERT INTO employees (name, departmentId, userId) OUTPUT inserted.* VALUES (@name, @departmentId, @userId)' );
 
     return result.recordset[0] || null;
   };
@@ -88,6 +89,9 @@ export class EmployeeRepository {
       department: {
         id: row.departmentId,
         name: row.departmentName
+      },
+      user: {
+        id: row.userId
       }
     } ) );
   };
@@ -98,20 +102,27 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
+  findByUserId = async id => {
+    const pool = await this.db.poolPromise;
+    const result = await pool.request().input( 'id', this.db.sql.Int, id ).query( 'SELECT * FROM employees WHERE userId = @id' );
+    return result.recordset[0] || null;
+  };
+
   findByName = async name => {
     const pool = await this.db.poolPromise;
     const result = await pool.request().input( 'name', this.db.sql.NVarChar, name ).query( 'SELECT * FROM employees WHERE name = @name' );
     return result.recordset[0] || null;
   };
 
-  update = async ( id, { name, departmentId } ) => {
+  update = async ( id, { name, departmentId, userId } ) => {
     const pool = await this.db.poolPromise;
 
     const result = await pool.request()
       .input( 'id', this.db.sql.Int, id )
       .input( 'name', this.db.sql.NVarChar, name )
       .input( 'departmentId', this.db.sql.Int, departmentId )
-      .query( 'UPDATE employees SET name = @name, departmentId = @departmentId OUTPUT inserted.* WHERE id = @id' );
+      .input( 'userId', this.db.sql.Int, userId )
+      .query( 'UPDATE employees SET name = @name, departmentId = @departmentId, userId = @userId OUTPUT inserted.* WHERE id = @id' );
 
     return result.recordset[0] || null;
   };

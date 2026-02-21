@@ -41,7 +41,7 @@ export class DepartmentWebController {
         page: req.query.page,
         sort: req.query.sort
       } );
-      res.render( 'departments', { departments } );
+      res.render( 'departments', { departments, user: req.user || {} } );
     } catch ( error ) {
       next( error );
     }
@@ -50,7 +50,7 @@ export class DepartmentWebController {
   showDepartment = async ( req, res, next ) => {
     try {
       const department = await this.departmentService.getDepartmentById( req.params.id );
-      res.render( 'departments', { department } );
+      res.render( 'departments', { department, user: req.user || {} } );
     } catch ( error ) {
       next( error );
     }

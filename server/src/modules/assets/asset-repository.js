@@ -21,7 +21,7 @@ export class AssetRepository {
     }
 
     if ( filters.employee ) {
-      request.input( 'employee', this.db.sql.NVarChar, filters.employee );
+      request.input( 'employee', this.db.sql.NVarChar, `${filters.employee}` );
       query += ' AND assets.employeeId = @employee';
     }
 
@@ -68,7 +68,7 @@ export class AssetRepository {
     }
 
     if ( filters.employee ) {
-      request.input( 'employee', this.db.sql.NVarChar, filters.employee );
+      request.input( 'employee', this.db.sql.NVarChar, `${filters.employee}` );
       query += ' AND assets.employeeId = @employee';
     }
 

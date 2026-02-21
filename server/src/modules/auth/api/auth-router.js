@@ -1,12 +1,14 @@
 import { Router } from 'express';
 
 import { validate } from '../../../middlewares/validate.js';
-import { authApiController } from '../auth-container.js';
-import { AuthSchema } from '../auth-schema.js';
+import { authService } from '../auth-container.js';
+import { SigninSchema, SignupSchema } from '../auth-schema.js';
+import { AuthApiController } from './auth-controller.js';
 
 const router = Router();
+const authApiController = new AuthApiController( authService );
 
-router.post( '/signin', validate( AuthSchema ), authApiController.signin );
-router.post( '/signup', validate( AuthSchema ), authApiController.signup );
+router.post( '/auth/signin', validate( SigninSchema ), authApiController.signin );
+router.post( '/auth/signup', validate( SignupSchema ), authApiController.signup );
 
 export { router as authApiRouter };

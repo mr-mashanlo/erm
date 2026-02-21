@@ -2,18 +2,19 @@ import { AuthError } from '../../errors/auth-error.js';
 
 export class AuthService {
 
-  constructor( authRepository, tokenService, hasher ) {
+  constructor( authRepository, employeeRepository, tokenService, hasher ) {
     this.authRepository = authRepository;
+    this.employeeRepository = employeeRepository;
     this.tokenService = tokenService;
     this.hasher = hasher;
   };
 
   signin = async ( { email, password } ) => {
     const user = await this.authRepository.findByEmail( email );
-    if ( !user ) throw new AuthError( 400, 'BAD_REQUEST', [ { name: 'email', message: 'Email is not exist' } ] );
+    if ( !user ) throw new AuthError( 404, 'bad Request', [ { name: 'email', message: 'Email is not exist' } ] );
 
     const isValid = this.hasher.compare( password, user.password );
-    if ( !isValid ) throw new AuthError( 400, 'BAD_REQUEST', [ { name: 'email', message: 'Incorrect password' } ] );
+    if ( !isValid ) throw new AuthError( 400, 'bad Request', [ { name: 'password', message: 'Incorrect password' } ] );
 
     const accessToken = this.tokenService.generateAccessToken( { id: user.id, email: user.email, role: user.role } );
     const refreshToken = this.tokenService.generateRefreshToken();
@@ -23,9 +24,9 @@ export class AuthService {
     return { user: { id: user.id, email: user.email }, accessToken, refreshToken };
   };
 
-  signup = async ( { email, password } ) => {
+  signup = async ( { name, departmentId, email, password } ) => {
     const candidate = await this.authRepository.findByEmail( email );
-    if ( candidate ) throw new AuthError( 400, 'BAD_REQUEST', [ { name: 'email', message: 'Email is already exist' } ] );
+    if ( candidate ) throw new AuthError( 404, 'bad Request', [ { name: 'email', message: 'Email is already exist' } ] );
 
     const hash = this.hasher.hash( password );
     const user = await this.authRepository.create( { email, password: hash, role: 'user' } );
@@ -35,6 +36,7 @@ export class AuthService {
     const hashedRefreshToken = this.tokenService.hashRefreshToken( refreshToken );
 
     await this.authRepository.updateRefreshToken( user.id, hashedRefreshToken );
+    await this.employeeRepository.create( { name, departmentId, userId: user.id } );
     return { user: { id: user.id, email: user.email }, accessToken, refreshToken };
   };
 
