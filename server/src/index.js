@@ -16,6 +16,7 @@ import { departmentApiRouter } from './modules/departments/api/department-router
 import { departmentWebRouter } from './modules/departments/web/department-router.js';
 import { employeeApiRouter } from './modules/employees/api/employee-router.js';
 import { employeeWebRouter } from './modules/employees/web/employee-router.js';
+import { homeWebRouter } from './modules/home/web/home-router.js';
 
 const app = express();
 const __filename = fileURLToPath( import.meta.url );
@@ -32,19 +33,19 @@ app.set( 'view engine', 'ejs' );
 
 app.use( urlBuilder );
 
-app.get( '/', ( req, res ) => res.render( 'index' ) );
+app.use( '/', homeWebRouter );
 
-app.use( '/api/auth', authApiRouter );
-app.use( '/auth', authWebRouter );
+app.use( '/api', authApiRouter );
+app.use( '/', authWebRouter );
 
-app.use( '/api/employees', employeeApiRouter );
-app.use( '/employees', employeeWebRouter );
+app.use( '/api', employeeApiRouter );
+app.use( '/', employeeWebRouter );
 
-app.use( '/api/departments', departmentApiRouter );
-app.use( '/departments', departmentWebRouter );
+app.use( '/api', departmentApiRouter );
+app.use( '/', departmentWebRouter );
 
-app.use( '/api/assets', assetApiRouter );
-app.use( '/assets', assetWebRouter );
+app.use( '/api', assetApiRouter );
+app.use( '/', assetWebRouter );
 
 app.use( errorHandler );
 
