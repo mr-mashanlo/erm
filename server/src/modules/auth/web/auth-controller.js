@@ -16,7 +16,7 @@ export class AuthWebController {
   showSignup = async ( req, res, next ) => {
     try {
       const departments = await this.departmentService.getAllDepartments( { limit: '0' } );
-      res.render( 'signup', { departments, user: { email: 'emily@company.com', password: 'Password12345%' }, errors: [] } );
+      res.render( 'signup', { departments: departments || {}, user: { email: 'emily@company.com', password: 'Password12345%' }, errors: [] } );
     } catch ( error ) {
       next( error );
     }

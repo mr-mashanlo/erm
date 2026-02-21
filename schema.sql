@@ -1,10 +1,16 @@
+CREATE DATABASE erm;
+GO
+
+USE erm;
+GO
+
 CREATE TABLE users (
   id INT PRIMARY KEY IDENTITY(1, 1),
   email NVARCHAR(100) UNIQUE NOT NULL,
   password NVARCHAR(100) NOT NULL,
   role NVARCHAR(50) NOT NULL,
-  refreshToken NVARCHAR(100),
-  expiredAt INT,
+  refreshToken NVARCHAR(512),
+  expiredAt BIGINT,
 );
 
 CREATE TABLE departments (
