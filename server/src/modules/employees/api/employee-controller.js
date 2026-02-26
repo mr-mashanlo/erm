@@ -1,3 +1,6 @@
+import { PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
+import { EmployeeQuerySchema, FilteringQuerySchema } from '../employee-schema.js';
+
 export class EmployeeApiController {
 
   constructor( employeeService ) {
@@ -6,7 +9,8 @@ export class EmployeeApiController {
 
   createEmployee = async ( req, res, next ) => {
     try {
-      const employee = await this.employeeService.createEmployee( req.body );
+      const body = EmployeeQuerySchema.parse( req.body );
+      const employee = await this.employeeService.createEmployee( { ...body, companyId: req.user.company } );
       res.json( employee );
     } catch ( error ) {
       next( error );
@@ -15,23 +19,19 @@ export class EmployeeApiController {
 
   deleteEmployee = async ( req, res, next ) => {
     try {
-      const employee = await this.employeeService.deleteEmployee( req.params.id );
-      res.json( employee );
+      await this.employeeService.deleteEmployee( req.params.id );
+      res.json( { ok: true } );
     } catch ( error ) {
       next( error );
     }
   };
 
-  getAllEmployees = async ( req, res, next ) => {
+  getEmployees = async ( req, res, next ) => {
     try {
-      const employees = await this.employeeService.getAllEmployees( {
-        search: req.query.search,
-        department: req.query.department,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
+      const filters = FilteringQuerySchema.parse( req.query );
+      const sort = SortingQuerySchema.parse( req.query );
+      const pagination = PaginationQuerySchema.parse( req.query );
+      const employees = await this.employeeService.getEmployees( { ...filters, companyId: req.user.company }, sort, pagination );
       res.json( employees );
     } catch ( error ) {
       next( error );
@@ -49,7 +49,8 @@ export class EmployeeApiController {
 
   updateEmployee = async ( req, res, next ) => {
     try {
-      const employee = await this.employeeService.updateEmployee( req.params.id, req.body );
+      const body = EmployeeQuerySchema.parse( req.body );
+      const employee = await this.employeeService.updateEmployee( req.params.id, body );
       res.json( employee );
     } catch ( error ) {
       next( error );

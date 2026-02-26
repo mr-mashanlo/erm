@@ -1,3 +1,6 @@
+import { FilteringQuerySchema, PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
+import { DepartmentQuerySchema } from '../department-schema.js';
+
 export class DepartmentApiController {
 
   constructor( departmentService ) {
@@ -6,7 +9,8 @@ export class DepartmentApiController {
 
   createDepartment = async ( req, res, next ) => {
     try {
-      const department = await this.departmentService.createDepartment( req.body );
+      const body = DepartmentQuerySchema.parse( req.body );
+      const department = await this.departmentService.createDepartment( { ...body, companyId: req.user.company } );
       res.json( department );
     } catch ( error ) {
       next( error );
@@ -15,23 +19,19 @@ export class DepartmentApiController {
 
   deleteDepartment = async ( req, res, next ) => {
     try {
-      const department = await this.departmentService.deleteDepartment( req.params.id );
-      res.json( department );
+      await this.departmentService.deleteDepartment( req.params.id );
+      res.json( { ok: true } );
     } catch ( error ) {
       next( error );
     }
   };
 
-  getAllDepartments = async ( req, res, next ) => {
+  getDepartments = async ( req, res, next ) => {
     try {
-      const departments = await this.departmentService.getAllDepartments( {
-        search: req.query.search,
-        address: req.query.address,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
+      const filters = FilteringQuerySchema.parse( req.query );
+      const sort = SortingQuerySchema.parse( req.query );
+      const pagination = PaginationQuerySchema.parse( req.query );
+      const departments = await this.departmentService.getDepartments( { ...filters, companyId: req.user.company }, sort, pagination );
       res.json( departments );
     } catch ( error ) {
       next( error );
@@ -49,7 +49,8 @@ export class DepartmentApiController {
 
   updateDepartment = async ( req, res, next ) => {
     try {
-      const department = await this.departmentService.updateDepartment( req.params.id, req.body );
+      const body = DepartmentQuerySchema.parse( req.body );
+      const department = await this.departmentService.updateDepartment( req.params.id, body );
       res.json( department );
     } catch ( error ) {
       next( error );

@@ -1,19 +1,23 @@
+import { FilteringQuerySchema, PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
+import { DepartmentQuerySchema } from '../department-schema.js';
+
 export class DepartmentWebController {
 
   constructor( departmentService ) {
     this.departmentService = departmentService;
   };
 
-  create = async ( req, res, next ) => {
+  createDepartment = async ( req, res, next ) => {
     try {
-      await this.departmentService.createDepartment( req.body );
+      const body = DepartmentQuerySchema.parse( req.body );
+      await this.departmentService.createDepartment( { ...body, companyId: req.user.company } );
       res.redirect( '/departments' );
     } catch ( error ) {
       next( error );
     }
   };
 
-  delete = async ( req, res, next ) => {
+  deleteDepartment = async ( req, res, next ) => {
     try {
       await this.departmentService.deleteDepartment( req.params.id );
       res.redirect( '/departments' );
@@ -22,35 +26,23 @@ export class DepartmentWebController {
     }
   };
 
-  update = async ( req, res, next ) => {
-    try {
-      await this.departmentService.updateDepartment( req.params.id, req.body );
-      res.redirect( '/departments' );
-    } catch ( error ) {
-      next( error );
-    }
-  };
-
   showDepartments = async ( req, res, next ) => {
     try {
-      const departments = await this.departmentService.getAllDepartments( {
-        search: req.query.search,
-        address: req.query.address,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
-      res.render( 'departments', { departments, user: req.user || {} } );
+      const filters = FilteringQuerySchema.parse( req.query );
+      const sort = SortingQuerySchema.parse( req.query );
+      const pagination = PaginationQuerySchema.parse( req.query );
+      const departments = await this.departmentService.getDepartments( { ...filters, companyId: req.user.company }, sort, pagination );
+      res.render( 'departments', { departments } );
     } catch ( error ) {
       next( error );
     }
   };
 
-  showDepartment = async ( req, res, next ) => {
+  updateDepartment = async ( req, res, next ) => {
     try {
-      const department = await this.departmentService.getDepartmentById( req.params.id );
-      res.render( 'departments', { department, user: req.user || {} } );
+      const body = DepartmentQuerySchema.parse( req.body );
+      await this.departmentService.updateDepartment( req.params.id, body );
+      res.redirect( '/departments' );
     } catch ( error ) {
       next( error );
     }

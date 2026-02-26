@@ -1,3 +1,6 @@
+import { FilteringQuerySchema, PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
+import { AssetQuerySchema } from '../asset-schema.js';
+
 export class AssetApiController {
 
   constructor( assetService ) {
@@ -6,7 +9,8 @@ export class AssetApiController {
 
   createAsset = async ( req, res, next ) => {
     try {
-      const asset = await this.assetService.createAsset( req.body );
+      const body = AssetQuerySchema.parse( req.body );
+      const asset = await this.assetService.createAsset( { ...body, companyId: req.user.company } );
       res.json( asset );
     } catch ( error ) {
       next( error );
@@ -15,24 +19,19 @@ export class AssetApiController {
 
   deleteAsset = async ( req, res, next ) => {
     try {
-      const asset = await this.assetService.deleteAsset( req.params.id );
-      res.json( asset );
+      await this.assetService.deleteAsset( req.params.id );
+      res.json( { ok: true } );
     } catch ( error ) {
       next( error );
     }
   };
 
-  getAllAssets = async ( req, res, next ) => {
+  getAssets = async ( req, res, next ) => {
     try {
-      const assets = await this.assetService.getAllAssets( {
-        search: req.query.search,
-        serialNumber: req.query.serialNumber,
-        employee: req.query.employee,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
+      const filters = FilteringQuerySchema.parse( req.query );
+      const sort = SortingQuerySchema.parse( req.query );
+      const pagination = PaginationQuerySchema.parse( req.query );
+      const assets = await this.assetService.getAssets( { ...filters, companyId: req.user.company }, sort, pagination );
       res.json( assets );
     } catch ( error ) {
       next( error );
@@ -50,7 +49,8 @@ export class AssetApiController {
 
   updateAsset = async ( req, res, next ) => {
     try {
-      const asset = await this.assetService.updateAsset( req.params.id, req.body );
+      const body = AssetQuerySchema.parse( req.body );
+      const asset = await this.assetService.updateAsset( req.params.id, body );
       res.json( asset );
     } catch ( error ) {
       next( error );

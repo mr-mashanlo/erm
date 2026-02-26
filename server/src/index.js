@@ -10,13 +10,13 @@ import { errorHandler } from './middlewares/error-handler.js';
 import { urlBuilder } from './middlewares/url-builder.js';
 import { assetApiRouter } from './modules/assets/api/asset-router.js';
 import { assetWebRouter } from './modules/assets/web/asset-router.js';
-import { authApiRouter } from './modules/auth/api/auth-router.js';
-import { authWebRouter } from './modules/auth/web/auth-router.js';
 import { departmentApiRouter } from './modules/departments/api/department-router.js';
 import { departmentWebRouter } from './modules/departments/web/department-router.js';
 import { employeeApiRouter } from './modules/employees/api/employee-router.js';
 import { employeeWebRouter } from './modules/employees/web/employee-router.js';
 import { homeWebRouter } from './modules/home/web/home-router.js';
+import { userApiRouter } from './modules/users/api/user-router.js';
+import { userWebRouter } from './modules/users/web/user-router.js';
 
 const app = express();
 const __filename = fileURLToPath( import.meta.url );
@@ -35,17 +35,17 @@ app.use( urlBuilder );
 
 app.use( '/', homeWebRouter );
 
-app.use( '/api', authApiRouter );
-app.use( '/', authWebRouter );
+app.use( '/api', userApiRouter );
+app.use( '/', userWebRouter );
+
+app.use( '/api', assetApiRouter );
+app.use( '/', assetWebRouter );
 
 app.use( '/api', employeeApiRouter );
 app.use( '/', employeeWebRouter );
 
 app.use( '/api', departmentApiRouter );
 app.use( '/', departmentWebRouter );
-
-app.use( '/api', assetApiRouter );
-app.use( '/', assetWebRouter );
 
 app.use( errorHandler );
 

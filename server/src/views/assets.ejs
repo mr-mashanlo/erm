@@ -23,8 +23,6 @@
   </head>
 
   <body class="text-xs">
-    <%- include('includes/header'); %>
-
     <section class="p-4 sm:p-10">
       <div class="border border-zinc-200 rounded-md">
         <div class="p-3 flex sm:items-center justify-between gap-3 flex-col sm:flex-row">
@@ -33,7 +31,7 @@
             <%- include('includes/search-form'); %>
             <button onclick="create_modal.showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-md cursor-pointer">Create</button>
             <dialog id="create_modal" class="modal">
-              <%- include('includes/create-asset-form', { employees: employees.data }); %>
+              <%- include('includes/create-asset-form', { types }); %>
               <form method="dialog" class="modal-backdrop"><button>close</button></form>
             </dialog>
           </div> 
@@ -54,7 +52,7 @@
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
                   </a>
                 </th>
-                <th class="w-32 px-3 py-4.5"></th>
+                <th class="px-3 py-4.5">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -66,12 +64,12 @@
                     <div class="inline-flex items-center">
                       <button onclick="window['edit_modal_<%= asset.id %>'].showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
                       <dialog id="edit_modal_<%= asset.id %>" class="modal">
-                        <%- include('includes/update-asset-form', { asset, employees: employees.data }); %>
+                        <%- include('includes/update-asset-form', { asset, types }); %>
                         <form method="dialog" class="modal-backdrop"><button>close</button></form>
                       </dialog>
-                      <button onclick="window['delete_modal_<%= asset.id %>'].showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Delete</button>
+                      <button onclick="window['delete_modal_<%= asset.id %>'].showModal()" class="px-3 py-1.5 border border-l-0 border-zinc-200 bg-zinc-100 rounded-e-md cursor-pointer">Return</button>
                       <dialog id="delete_modal_<%= asset.id %>" class="modal">
-                        <%- include('includes/delete-asset-form', { asset }); %>
+                        <%- include('includes/return-asset-form', { asset }); %>
                         <form method="dialog" class="modal-backdrop"><button>close</button></form>
                       </dialog>
                     </div>
@@ -81,7 +79,9 @@
             </tbody>
           </table>
         </div>
-        <%- include('includes/pagination', { limit: assets.limit, page: assets.page, total: assets.total }); %>
+        <% if (assets.total > 0) { %>
+          <%- include('includes/pagination', { limit: assets.limit, page: assets.page, total: assets.total }); %>
+        <% } %>
       </div>
     </section>
   </body>

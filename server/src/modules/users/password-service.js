@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 
-export class BcryptHasher {
+export class PasswordService {
 
   hash = password => {
     return bcrypt.hashSync( password, 7 );

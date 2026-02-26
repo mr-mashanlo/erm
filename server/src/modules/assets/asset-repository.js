@@ -1,122 +1,139 @@
+import slug from 'slug';
+
 export class AssetRepository {
 
   constructor( db ) {
     this.db = db;
-  };
+  }
 
-  count = async ( { filters } ) => {
-    const pool = await this.db.poolPromise;
-    const request = pool.request();
-
-    let query = 'SELECT COUNT(*) as total FROM assets WHERE 1=1';
+  count = async ( filters ) => {
+    const executor = await this.db.getExecutor();
+    const request = executor.request();
+    let query = `
+      SELECT assets.*
+      FROM assets
+      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId
+      WHERE 1 = 1
+    `;
 
     if ( filters.search ) {
       request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
       query += ' AND assets.name LIKE @name';
     }
 
-    if ( filters.serialNumber ) {
-      request.input( 'serialNumber', this.db.sql.NVarChar, filters.serialNumber );
-      query += ' AND assets.serialNumber = @serialNumber';
+    if ( filters.companyId ) {
+      request.input( 'companyId', this.db.sql.Int, filters.companyId );
+      query += ' AND assets.companyId = @companyId';
     }
 
-    if ( filters.employee ) {
-      request.input( 'employee', this.db.sql.NVarChar, `${filters.employee}` );
-      query += ' AND assets.employeeId = @employee';
+    if ( filters.employeeId ) {
+      request.input( 'employeeId', this.db.sql.Int, filters.employeeId );
+      query += ' AND asset_employee.employeeId = @employeeId';
+    }
+
+    if ( filters.returnedAt || filters.returnedAt === null ) {
+      request.input( 'returnedAt', this.db.sql.BigInt, filters.returnedAt );
+      query += ' AND asset_employee.returnedAt = @returnedAt';
     }
 
     const result = await request.query( query );
-
-    return result.recordset[0].total;
+    return result.recordset.length;
   };
 
-  create = async ( { name, serialNumber, employeeId } ) => {
-    const pool = await this.db.poolPromise;
-
-    const result = await pool.request()
+  create = async ( { name, serialNumber, companyId, typeId } ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
       .input( 'name', this.db.sql.NVarChar, name )
+      .input( 'slug', this.db.sql.NVarChar, slug( name ) )
       .input( 'serialNumber', this.db.sql.NVarChar, serialNumber )
-      .input( 'employeeId', this.db.sql.Int, employeeId )
-      .query( 'INSERT INTO assets (name, serialNumber, employeeId) OUTPUT inserted.* VALUES (@name, @serialNumber, @employeeId)' );
-
+      .input( 'typeId', this.db.sql.Int, typeId )
+      .input( 'companyId', this.db.sql.Int, companyId )
+      .query( 'INSERT INTO assets (name, slug, serialNumber, typeId, companyId) OUTPUT inserted.* VALUES (@name, @slug, @serialNumber, @typeId, @companyId)' );
     return result.recordset[0] || null;
   };
 
-  delete = async id => {
-    const pool = await this.db.poolPromise;
-    await pool.request().input( 'id', this.db.sql.Int, id ).query( 'DELETE FROM assets WHERE id = @id' );
+  delete = async ( id ) => {
+    const executor = await this.db.getExecutor();
+    await executor.request()
+      .input( 'id', this.db.sql.Int, id )
+      .query( 'DELETE FROM assets WHERE id = @id' );
     return { ok: true };
   };
 
-  find = async ( { filters, sort, pagination } ) => {
-    const pool = await this.db.poolPromise;
-    const request = pool.request();
-
-    let query = `SELECT assets.*, employees.name AS employeeName
-    FROM assets
-    LEFT JOIN employees ON assets.employeeId = employees.id
-    WHERE 1 = 1`;
+  find = async ( filters, sort, pagination ) => {
+    const executor = await this.db.getExecutor();
+    const request = await executor.request();
+    let query = `
+      SELECT assets.id as id, assets.name as name, assets.serialNumber as serialNumber, asset_employee.id as assignId, asset_types.name as type
+      FROM assets
+      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId
+      LEFT JOIN asset_types ON assets.typeId = asset_types.id
+      WHERE 1 = 1
+    `;
 
     if ( filters.search ) {
       request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
       query += ' AND assets.name LIKE @name';
     }
 
-    if ( filters.serialNumber ) {
-      request.input( 'serialNumber', this.db.sql.NVarChar, filters.serialNumber );
-      query += ' AND assets.serialNumber = @serialNumber';
+    if ( filters.companyId ) {
+      request.input( 'companyId', this.db.sql.Int, filters.companyId );
+      query += ' AND assets.companyId = @companyId';
     }
 
-    if ( filters.employee ) {
-      request.input( 'employee', this.db.sql.NVarChar, `${filters.employee}` );
-      query += ' AND assets.employeeId = @employee';
+    if ( filters.employeeId ) {
+      request.input( 'employeeId', this.db.sql.Int, filters.employeeId );
+      query += ' AND asset_employee.employeeId = @employeeId';
     }
 
-    const sortField = Object.keys( sort )[0] || 'id';
-    const sortOrder = sort[sortField] === -1 ? 'DESC' : 'ASC';
-    query += ` ORDER BY assets.${sortField} ${sortOrder}`;
-
-    if ( pagination.limit > 0 ) {
-      request.input( 'offset', this.db.sql.Int, pagination.skip );
-      request.input( 'limit', this.db.sql.Int, pagination.limit );
-      query += ' OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY';
+    if ( filters.returnedAt || filters.returnedAt === null ) {
+      request.input( 'returnedAt', this.db.sql.BigInt, filters.returnedAt );
+      query += ' AND asset_employee.returnedAt = @returnedAt';
     }
+
+    query += ` ORDER BY ${sort.sort} ${sort.order}`;
+    query += ` OFFSET ${pagination.skip} ROWS FETCH NEXT ${pagination.limit} ROWS ONLY`;
 
     const result = await request.query( query );
-
-    return result.recordset.map( row => ( {
-      id: row.id,
-      name: row.name,
-      serialNumber: row.serialNumber,
-      employee: {
-        id: row.employeeId,
-        name: row.employeeName
-      }
-    } ) );
+    return result.recordset;
   };
 
-  findById = async id => {
-    const pool = await this.db.poolPromise;
-    const result = await pool.request().input( 'id', this.db.sql.Int, id ).query( 'SELECT * FROM assets WHERE id = @id' );
+  findById = async ( id ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
+      .input( 'id', this.db.sql.Int, id )
+      .query( 'SELECT * FROM assets WHERE id = @id' );
     return result.recordset[0] || null;
   };
 
-  findByName = async name => {
-    const pool = await this.db.poolPromise;
-    const result = await pool.request().input( 'name', this.db.sql.NVarChar, name ).query( 'SELECT * FROM assets WHERE name = @name' );
-    return result.recordset[0] || null;
-  };
-
-  update = async ( id, { name, serialNumber, employeeId } ) => {
-    const pool = await this.db.poolPromise;
-
-    const result = await pool.request()
+  update = async ( id, { name, serialNumber, typeId } ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
       .input( 'id', this.db.sql.Int, id )
       .input( 'name', this.db.sql.NVarChar, name )
+      .input( 'slug', this.db.sql.NVarChar, slug( name ) )
       .input( 'serialNumber', this.db.sql.NVarChar, serialNumber )
-      .input( 'employeeId', this.db.sql.Int, employeeId )
-      .query( 'UPDATE assets SET name = @name, serialNumber = @serialNumber, employeeId = @employeeId OUTPUT inserted.* WHERE id = @id' );
+      .input( 'typeId', this.db.sql.Int, typeId )
+      .query( 'UPDATE assets SET name = @name, slug = @slug, serialNumber = @serialNumber, typeId = @typeId OUTPUT inserted.* WHERE id = @id' );
+    return result.recordset[0] || null;
+  };
 
+  assign = async ( assetId, employeeId ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
+      .input( 'assetId', this.db.sql.Int, assetId )
+      .input( 'employeeId', this.db.sql.Int, employeeId )
+      .input( 'assignedAt', this.db.sql.BigInt, Date.now() )
+      .query( 'INSERT INTO asset_employee (assetId, employeeId, assignedAt) OUTPUT inserted.* VALUES (@assetId, @employeeId, @assignedAt)' );
+    return result.recordset[0] || null;
+  };
+
+  return = async ( id ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
+      .input( 'id', this.db.sql.Int, id )
+      .input( 'returnedAt', this.db.sql.BigInt, Date.now() )
+      .query( 'UPDATE asset_employee SET returnedAt = @returnedAt OUTPUT inserted.* WHERE id = @id' );
     return result.recordset[0] || null;
   };
 

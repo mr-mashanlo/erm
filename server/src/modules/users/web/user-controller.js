@@ -1,8 +1,7 @@
-export class AuthWebController {
+export class UserWebController {
 
-  constructor( authService, departmentService ) {
+  constructor( authService ) {
     this.authService = authService;
-    this.departmentService = departmentService;
   };
 
   showSignin = async ( req, res, next ) => {
@@ -15,8 +14,7 @@ export class AuthWebController {
 
   showSignup = async ( req, res, next ) => {
     try {
-      const departments = await this.departmentService.getAllDepartments( { limit: '0' } );
-      res.render( 'signup', { departments: departments || {}, user: { email: 'emily@company.com', password: 'Password12345%' }, errors: [] } );
+      res.render( 'signup', { user: { email: 'emily@company.com', password: 'Password12345%' }, errors: [] } );
     } catch ( error ) {
       next( error );
     }
@@ -40,6 +38,8 @@ export class AuthWebController {
       res.cookie( 'refreshToken', refreshToken, { maxAge: process.env.COOKIE_REFRESH_TIME, httpOnly: true, sameSite: 'none', secure: true } );
       res.redirect( '/' );
     } catch ( error ) {
+      console.log( error );
+
       res.render( 'signup', { user: req.body, errors: error.errors } );
     }
   };

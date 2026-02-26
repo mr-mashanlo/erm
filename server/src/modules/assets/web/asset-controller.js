@@ -1,3 +1,6 @@
+import { PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
+import { AssetQuerySchema, FilteringQuerySchema } from '../asset-schema.js';
+
 export class AssetWebController {
 
   constructor( assetService, employeeService ) {
@@ -5,16 +8,17 @@ export class AssetWebController {
     this.employeeService = employeeService;
   };
 
-  create = async ( req, res, next ) => {
+  createAsset = async ( req, res, next ) => {
     try {
-      await this.assetService.createAsset( req.body );
+      const body = AssetQuerySchema.parse( req.body );
+      await this.assetService.createAsset( { ...body, companyId: req.user.company } );
       res.redirect( '/assets' );
     } catch ( error ) {
       next( error );
     }
   };
 
-  delete = async ( req, res, next ) => {
+  deleteAsset = async ( req, res, next ) => {
     try {
       await this.assetService.deleteAsset( req.params.id );
       res.redirect( '/assets' );
@@ -23,47 +27,45 @@ export class AssetWebController {
     }
   };
 
-  update = async ( req, res, next ) => {
+  showAssets = async ( req, res, next ) => {
     try {
-      await this.assetService.updateAsset( req.params.id, req.body );
+      const filters = FilteringQuerySchema.parse( req.query );
+      const sort = SortingQuerySchema.parse( req.query );
+      const pagination = PaginationQuerySchema.parse( req.query );
+      const assets = await this.assetService.getAssets( { ...filters, companyId: req.user.company }, sort, pagination );
+      const types = await this.assetService.getTypes( { companyId: req.user.company } );
+      res.render( 'assets', { assets, types } );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
+  updateAsset = async ( req, res, next ) => {
+    try {
+      const body = AssetQuerySchema.parse( req.body );
+      await this.assetService.updateAsset( req.params.id, body );
       res.redirect( '/assets' );
     } catch ( error ) {
       next( error );
     }
   };
 
-  showAssets = async ( req, res, next ) => {
+  createEmployeeAsset = async ( req, res, next ) => {
     try {
-      const assets = await this.assetService.getAllAssets( {
-        search: req.query.search,
-        serialNumber: req.query.serialNumber,
-        employee: req.query.employee,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
-      const employees = await this.employeeService.getAllEmployees( { limit: '0' } );
-      res.render( 'assets', { assets, employees, user: req.user || {} } );
+      const body = AssetQuerySchema.parse( req.body );
+      const asset = await this.assetService.createAsset( { ...body, companyId: req.user.company } );
+      const employee = await this.employeeService.getEmployeeBySlug( req.params.ename );
+      await this.assetService.assignAssetToEmployee( asset.id, employee.id );
+      res.redirect( `/departments/${req.params.dname}/${req.params.ename}/` );
     } catch ( error ) {
       next( error );
     }
   };
 
-  showMyAssets = async ( req, res, next ) => {
+  returnEmployeeAsset = async ( req, res, next ) => {
     try {
-      const employee = await this.employeeService.getEmployeeByUserId( req.user.id );
-      const assets = await this.assetService.getAllAssets( {
-        search: req.query.search,
-        serialNumber: req.query.serialNumber,
-        employee: employee.id,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
-      const employees = await this.employeeService.getAllEmployees( { limit: '0' } );
-      res.render( 'assets', { assets, employees, user: req.user || {} } );
+      await this.assetService.returnAssetFromEmployee( req.params.id );
+      res.redirect( `/departments/${req.params.dname}/${req.params.ename}/` );
     } catch ( error ) {
       next( error );
     }
@@ -71,26 +73,23 @@ export class AssetWebController {
 
   showEmployeeAssets = async ( req, res, next ) => {
     try {
-      const assets = await this.assetService.getAllAssets( {
-        search: req.query.search,
-        serialNumber: req.query.serialNumber,
-        employee: req.params.id,
-        limit: req.query.limit,
-        order: req.query.order,
-        page: req.query.page,
-        sort: req.query.sort
-      } );
-      const employees = await this.employeeService.getAllEmployees( { limit: '0' } );
-      res.render( 'assets', { assets, employees, user: req.user || {} } );
+      const filters = FilteringQuerySchema.parse( req.query );
+      const sort = SortingQuerySchema.parse( req.query );
+      const pagination = PaginationQuerySchema.parse( req.query );
+      const employee = await this.employeeService.getEmployeeBySlug( req.params.ename );
+      const assets = await this.assetService.getAssets( { ...filters, employeeId: employee.id, returnedAt: null }, sort, pagination );
+      const types = await this.assetService.getTypes( { companyId: req.user.company } );
+      res.render( 'assets', { assets, types } );
     } catch ( error ) {
       next( error );
     }
   };
 
-  showAsset = async ( req, res, next ) => {
+  updateEmployeeAsset = async ( req, res, next ) => {
     try {
-      const asset = await this.assetService.getAssetById( req.params.id );
-      res.render( 'assets', { asset, user: req.user || {} } );
+      const body = AssetQuerySchema.parse( req.body );
+      await this.assetService.updateAsset( req.params.id, body );
+      res.redirect( `/departments/${req.params.dname}/${req.params.ename}/` );
     } catch ( error ) {
       next( error );
     }

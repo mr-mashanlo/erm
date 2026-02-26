@@ -1,56 +1,47 @@
+import { withTransaction } from '../../config/transaction.js';
+
 export class EmployeeService {
 
-  constructor( employeeRepository, departmentRepository ) {
+  constructor( employeeRepository ) {
     this.employeeRepository = employeeRepository;
-    this.departmentRepository = departmentRepository;
   };
 
-  createEmployee = async employee => {
-    return await this.employeeRepository.create( employee );
+  createEmployee = async ( employee ) => {
+    return withTransaction( async () => {
+      return await this.employeeRepository.create( employee );
+    } );
   };
 
-  deleteEmployee = async id => {
-    return await this.employeeRepository.delete( id );
+  deleteEmployee = async ( id ) => {
+    return withTransaction( async () => {
+      await this.employeeRepository.delete( id );
+    } );
   };
 
-  getAllEmployees = async query => {
-    const filters = {};
-    const sort = {};
-    const pagination = {};
-
-    if ( query.search ) {
-      filters.search = query.search;
-    }
-
-    if ( query.department ) {
-      const department = await this.departmentRepository.findByName( query.department );
-      filters.department = department.id;
-    }
-
-    const allowedSortFields = [ 'name', 'department' ];
-    const sortField = allowedSortFields.includes( query.sort ) ? query.sort : 'id';
-    sort[sortField] = query.order === 'desc' ? -1 : 1;
-
-    const page = Number( query.page ) || 1;
-    pagination.limit = Math.min( Number( query.limit || 10 ), 100 );
-    pagination.skip = ( page - 1 ) * pagination.limit;
-
-    const employees = await this.employeeRepository.find( { filters, sort, pagination } );
-    const total = await this.employeeRepository.count( { filters } );
-
-    return { data: employees, total, page, limit: pagination.limit };
+  getEmployees = async ( filter, sort, pagination ) => {
+    return withTransaction( async () => {
+      const employees = await this.employeeRepository.find( filter, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
+      const total = await this.employeeRepository.count( filter );
+      return { data: employees, total, ...pagination };
+    } );
   };
 
-  getEmployeeById = async id => {
-    return await this.employeeRepository.findById( id );
+  getEmployeeById = async ( id ) => {
+    return withTransaction( async () => {
+      return await this.employeeRepository.findById( id );
+    } );
   };
 
-  getEmployeeByUserId = async id => {
-    return await this.employeeRepository.findByUserId( id );
+  getEmployeeBySlug = async ( slug ) => {
+    return withTransaction( async () => {
+      return await this.employeeRepository.findBySlug( slug );
+    } );
   };
 
   updateEmployee = async ( id, employee ) => {
-    return await this.employeeRepository.update( id, employee );
+    return withTransaction( async () => {
+      return await this.employeeRepository.update( id, employee );
+    } );
   };
 
 };

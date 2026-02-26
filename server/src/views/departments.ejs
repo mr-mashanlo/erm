@@ -23,8 +23,6 @@
   </head>
 
   <body class="text-xs">
-    <%- include('includes/header'); %>
-
     <section class="p-4 sm:p-10">
       <div class="border border-zinc-200 rounded-md">
         <div class="p-3 flex sm:items-center justify-between gap-3 flex-col sm:flex-row">
@@ -48,20 +46,13 @@
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
                   </a>
                 </th>
-                <th class="px-3 py-4.5">
-                  <a href="<%= buildUrl({ sort: 'address', order: query.order === 'asc' ? 'desc' : 'asc' }) %>" class="inline-flex items-center gap-1 cursor-pointer">
-                    <span>Address</span>
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
-                  </a>
-                </th>
-                <th class="w-32 px-3 py-4.5"></th>
+                <th class="px-3 py-4.5">Actions</th>
               </tr>
             </thead>
             <tbody>
               <% departments.data.forEach( department => { %>
                 <tr class="border-t border-zinc-200">
-                  <td class="p-3"><%= department.name %></td>
-                  <td class="p-3"><%= department.address %></td>
+                  <td class="p-3"><a href="/departments/<%= department.slug %>/" class="hover:underline"><%= department.name %></a></td>
                   <td class="p-3">
                     <div class="inline-flex items-center">
                       <button onclick="window['edit_modal_<%= department.id %>'].showModal()" class="px-3 py-1.5 border border-zinc-200 bg-zinc-100 rounded-s-md cursor-pointer">Edit</button>
@@ -81,7 +72,9 @@
             </tbody>
           </table>
         </div>
-        <%- include('includes/pagination', { limit: departments.limit, page: departments.page, total: departments.total }); %>
+        <% if (departments.total > 0) { %>
+          <%- include('includes/pagination', { limit: departments.limit, page: departments.page, total: departments.total }); %>
+        <% } %>
       </div>
     </section>
   </body>
