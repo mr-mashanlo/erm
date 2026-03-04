@@ -1,4 +1,6 @@
 import { withTransaction } from '../../config/transaction.js';
+import { FilteringQuerySchema, PaginationQuerySchema, SortingQuerySchema } from '../../schemas/filter-query-schema.js';
+import { DepartmentQuerySchema } from './department-schema.js';
 
 export class DepartmentService {
 
@@ -6,7 +8,8 @@ export class DepartmentService {
     this.departmentRepository = departmentRepository;
   };
 
-  createDepartment = async ( department ) => {
+  createDepartment = async ( body ) => {
+    const department = DepartmentQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.departmentRepository.create( department );
     } );
@@ -18,10 +21,13 @@ export class DepartmentService {
     } );
   };
 
-  getDepartments = async ( filter, sort, pagination ) => {
+  getDepartments = async ( query ) => {
+    const filters = FilteringQuerySchema.parse( query );
+    const sort = SortingQuerySchema.parse( query );
+    const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
-      const departments = await this.departmentRepository.find( filter, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      const total = await this.departmentRepository.count( filter );
+      const departments = await this.departmentRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
+      const total = await this.departmentRepository.count( filters );
       return { data: departments, total, ...pagination };
     } );
   };
@@ -38,7 +44,8 @@ export class DepartmentService {
     } );
   };
 
-  updateDepartment = async ( id, department ) => {
+  updateDepartment = async ( id, body ) => {
+    const department = DepartmentQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.departmentRepository.update( id, department );
     } );

@@ -41,6 +41,7 @@ CREATE TABLE employees (
   companyId INT REFERENCES companies(id) NOT NULL,
   departmentId INT REFERENCES departments(id) NOT NULL,
   createdAt BIGINT,
+  archived BIT,
 );
 
 CREATE TABLE user_employee (
@@ -63,7 +64,7 @@ CREATE TABLE assets (
   serialNumber NVARCHAR(100) NOT NULL,
   typeId INT REFERENCES asset_types(id) NOT NULL,
   companyId INT REFERENCES companies(id) NOT NULL,
-  purchasedAt BIGINT,
+  archived BIT,
 );
 
 CREATE TABLE asset_employee (
@@ -72,4 +73,5 @@ CREATE TABLE asset_employee (
   employeeId INT REFERENCES employees(id) NOT NULL,
   assigned_at BIGINT,
   returned_at BIGINT,
+  archived BIT,
 );

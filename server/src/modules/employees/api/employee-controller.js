@@ -1,6 +1,3 @@
-import { PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
-import { EmployeeQuerySchema, FilteringQuerySchema } from '../employee-schema.js';
-
 export class EmployeeApiController {
 
   constructor( employeeService ) {
@@ -9,8 +6,7 @@ export class EmployeeApiController {
 
   createEmployee = async ( req, res, next ) => {
     try {
-      const body = EmployeeQuerySchema.parse( req.body );
-      const employee = await this.employeeService.createEmployee( { ...body, companyId: req.user.company } );
+      const employee = await this.employeeService.createEmployee( { ...req.body, companyId: req.user.company } );
       res.json( employee );
     } catch ( error ) {
       next( error );
@@ -28,10 +24,7 @@ export class EmployeeApiController {
 
   getEmployees = async ( req, res, next ) => {
     try {
-      const filters = FilteringQuerySchema.parse( req.query );
-      const sort = SortingQuerySchema.parse( req.query );
-      const pagination = PaginationQuerySchema.parse( req.query );
-      const employees = await this.employeeService.getEmployees( { ...filters, companyId: req.user.company }, sort, pagination );
+      const employees = await this.employeeService.getEmployees( { ...req.query, companyId: req.user.company } );
       res.json( employees );
     } catch ( error ) {
       next( error );
@@ -49,8 +42,7 @@ export class EmployeeApiController {
 
   updateEmployee = async ( req, res, next ) => {
     try {
-      const body = EmployeeQuerySchema.parse( req.body );
-      const employee = await this.employeeService.updateEmployee( req.params.id, body );
+      const employee = await this.employeeService.updateEmployee( req.params.id, req.body );
       res.json( employee );
     } catch ( error ) {
       next( error );

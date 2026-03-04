@@ -6,14 +6,35 @@ export class AssetRepository {
     this.db = db;
   }
 
+  archive = async ( id, archive ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
+      .input( 'id', this.db.sql.Int, id )
+      .input( 'archived', this.db.sql.Bit, archive )
+      .query( 'UPDATE assets SET archived = @archived OUTPUT inserted.* WHERE id = @id' );
+    return result.recordset[0] || null;
+  };
+
+  assign = async ( employeeId, assetId ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
+      .input( 'assetId', this.db.sql.Int, assetId )
+      .input( 'employeeId', this.db.sql.Int, employeeId )
+      .input( 'assignedAt', this.db.sql.BigInt, Date.now() )
+      .input( 'archived', this.db.sql.Bit, false )
+      .query( 'INSERT INTO asset_employee (assetId, employeeId, assignedAt, archived) OUTPUT inserted.* VALUES (@assetId, @employeeId, @assignedAt, @archived)' );
+    return result.recordset[0] || null;
+  };
+
   count = async ( filters ) => {
     const executor = await this.db.getExecutor();
     const request = executor.request();
     let query = `
-      SELECT assets.*
+      SELECT assets.id as id, assets.name as name, assets.serialNumber as serialNumber, asset_employee.id as assignId, asset_types.name as type
       FROM assets
-      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId
-      WHERE 1 = 1
+      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId AND asset_employee.returnedAt IS NULL AND asset_employee.assignedAt IS NOT NULL
+      LEFT JOIN asset_types ON assets.typeId = asset_types.id
+      WHERE 1=1
     `;
 
     if ( filters.search ) {
@@ -31,9 +52,16 @@ export class AssetRepository {
       query += ' AND asset_employee.employeeId = @employeeId';
     }
 
-    if ( filters.returnedAt || filters.returnedAt === null ) {
-      request.input( 'returnedAt', this.db.sql.BigInt, filters.returnedAt );
-      query += ' AND asset_employee.returnedAt = @returnedAt';
+    if ( filters.archived ) {
+      request.input( 'archived', this.db.sql.Bit, true );
+      query += ' AND assets.archived = @archived';
+    } else {
+      request.input( 'archived', this.db.sql.Bit, false );
+      query += ' AND assets.archived = @archived';
+    }
+
+    if ( filters.orphaned ) {
+      query += ' AND asset_employee.assetId IS NULL';
     }
 
     const result = await request.query( query );
@@ -66,9 +94,9 @@ export class AssetRepository {
     let query = `
       SELECT assets.id as id, assets.name as name, assets.serialNumber as serialNumber, asset_employee.id as assignId, asset_types.name as type
       FROM assets
-      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId
+      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId AND asset_employee.returnedAt IS NULL AND asset_employee.assignedAt IS NOT NULL
       LEFT JOIN asset_types ON assets.typeId = asset_types.id
-      WHERE 1 = 1
+      WHERE 1=1
     `;
 
     if ( filters.search ) {
@@ -86,9 +114,16 @@ export class AssetRepository {
       query += ' AND asset_employee.employeeId = @employeeId';
     }
 
-    if ( filters.returnedAt || filters.returnedAt === null ) {
-      request.input( 'returnedAt', this.db.sql.BigInt, filters.returnedAt );
-      query += ' AND asset_employee.returnedAt = @returnedAt';
+    if ( filters.archived ) {
+      request.input( 'archived', this.db.sql.Bit, true );
+      query += ' AND assets.archived = @archived';
+    } else {
+      request.input( 'archived', this.db.sql.Bit, false );
+      query += ' AND assets.archived = @archived';
+    }
+
+    if ( filters.orphaned ) {
+      query += ' AND asset_employee.assetId IS NULL';
     }
 
     query += ` ORDER BY ${sort.sort} ${sort.order}`;
@@ -106,6 +141,16 @@ export class AssetRepository {
     return result.recordset[0] || null;
   };
 
+  return = async ( id ) => {
+    const executor = await this.db.getExecutor();
+    const result = await executor.request()
+      .input( 'id', this.db.sql.Int, id )
+      .input( 'returnedAt', this.db.sql.BigInt, Date.now() )
+      .input( 'archived', this.db.sql.Bit, true )
+      .query( 'UPDATE asset_employee SET returnedAt = @returnedAt, archived = @archived OUTPUT inserted.* WHERE id = @id' );
+    return result.recordset[0] || null;
+  };
+
   update = async ( id, { name, serialNumber, typeId } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
@@ -115,25 +160,6 @@ export class AssetRepository {
       .input( 'serialNumber', this.db.sql.NVarChar, serialNumber )
       .input( 'typeId', this.db.sql.Int, typeId )
       .query( 'UPDATE assets SET name = @name, slug = @slug, serialNumber = @serialNumber, typeId = @typeId OUTPUT inserted.* WHERE id = @id' );
-    return result.recordset[0] || null;
-  };
-
-  assign = async ( assetId, employeeId ) => {
-    const executor = await this.db.getExecutor();
-    const result = await executor.request()
-      .input( 'assetId', this.db.sql.Int, assetId )
-      .input( 'employeeId', this.db.sql.Int, employeeId )
-      .input( 'assignedAt', this.db.sql.BigInt, Date.now() )
-      .query( 'INSERT INTO asset_employee (assetId, employeeId, assignedAt) OUTPUT inserted.* VALUES (@assetId, @employeeId, @assignedAt)' );
-    return result.recordset[0] || null;
-  };
-
-  return = async ( id ) => {
-    const executor = await this.db.getExecutor();
-    const result = await executor.request()
-      .input( 'id', this.db.sql.Int, id )
-      .input( 'returnedAt', this.db.sql.BigInt, Date.now() )
-      .query( 'UPDATE asset_employee SET returnedAt = @returnedAt OUTPUT inserted.* WHERE id = @id' );
     return result.recordset[0] || null;
   };
 

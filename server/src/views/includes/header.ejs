@@ -2,15 +2,9 @@
   <a href="/" class="mr-auto"><img src="/images/favicon.svg" alt="lee" class="w-3.5 h-3.5"></a>
   <nav>
     <ul class="flex items-center gap-8">
-      <% if (user.role === 'admin') { %>
-        <li><a href="/employees">Employees</a></li>
-        <li><a href="/departments">Departments</a></li>
-        <li><a href="/assets">Assets</a></li>
-      <% } else if (user.role === 'user') { %>
-        <li><a href="/my-assets">My assets</a></li>
-      <% } else { %>
-        <li><a href="/auth/signin">Sign in</a></li>
-      <% } %>
+      <li><a href="/departments">Departments</a></li>
+      <li><a href="/employees">Employees</a></li>
+      <li><a href="/assets">Assets</a></li>
     </ul>
   </nav>
 </header>

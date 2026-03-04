@@ -6,6 +6,25 @@ export class AssetTypeRepository {
     this.db = db;
   }
 
+  count = async ( filters ) => {
+    const executor = await this.db.getExecutor();
+    const request = await executor.request();
+    let query = 'SELECT * FROM asset_types WHERE 1=1';
+
+    if ( filters.search ) {
+      request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
+      query += ' AND asset_types.name LIKE @name';
+    }
+
+    if ( filters.companyId ) {
+      request.input( 'companyId', this.db.sql.Int, filters.companyId );
+      query += ' AND asset_types.companyId = @companyId';
+    }
+
+    const result = await request.query( query );
+    return result.recordset.length;
+  };
+
   create = async ( { name, companyId } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
@@ -24,15 +43,23 @@ export class AssetTypeRepository {
     return { ok: true };
   };
 
-  find = async ( filters ) => {
+  find = async ( filters, sort, pagination ) => {
     const executor = await this.db.getExecutor();
     const request = await executor.request();
-    let query = 'SELECT * FROM asset_types WHERE 1 = 1';
+    let query = 'SELECT * FROM asset_types WHERE 1=1';
+
+    if ( filters.search ) {
+      request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
+      query += ' AND asset_types.name LIKE @name';
+    }
 
     if ( filters.companyId ) {
       request.input( 'companyId', this.db.sql.Int, filters.companyId );
       query += ' AND asset_types.companyId = @companyId';
     }
+
+    query += ` ORDER BY ${sort.sort} ${sort.order}`;
+    query += ` OFFSET ${pagination.skip} ROWS FETCH NEXT ${pagination.limit} ROWS ONLY`;
 
     const result = await request.query( query );
     return result.recordset;

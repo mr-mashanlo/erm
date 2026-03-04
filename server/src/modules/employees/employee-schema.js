@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 export const EmployeeQuerySchema = z.object( {
   name: z.string(),
-  departmentId: z.string().transform( ( v ) => Number( v ) ).optional()
+  departmentId: z.xor( [ z.string(), z.number() ] ),
+  companyId: z.xor( [ z.string(), z.number() ] )
 } );
 
 export const FilteringQuerySchema = z.object( {
@@ -12,6 +13,7 @@ export const FilteringQuerySchema = z.object( {
   ),
   departmentId: z.preprocess(
     ( v ) => v !== '' ? v : undefined,
-    z.string().optional()
-  )
+    z.xor( [ z.string(), z.number() ] ).optional()
+  ),
+  archived: z.boolean().optional()
 } );

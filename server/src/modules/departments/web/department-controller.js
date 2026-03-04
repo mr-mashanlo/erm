@@ -1,6 +1,3 @@
-import { FilteringQuerySchema, PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
-import { DepartmentQuerySchema } from '../department-schema.js';
-
 export class DepartmentWebController {
 
   constructor( departmentService ) {
@@ -9,9 +6,8 @@ export class DepartmentWebController {
 
   createDepartment = async ( req, res, next ) => {
     try {
-      const body = DepartmentQuerySchema.parse( req.body );
-      await this.departmentService.createDepartment( { ...body, companyId: req.user.company } );
-      res.redirect( '/departments' );
+      await this.departmentService.createDepartment( { ...req.body, companyId: req.user.company } );
+      res.redirect( req.get( 'Referrer' ) || '/departments' );
     } catch ( error ) {
       next( error );
     }
@@ -20,7 +16,7 @@ export class DepartmentWebController {
   deleteDepartment = async ( req, res, next ) => {
     try {
       await this.departmentService.deleteDepartment( req.params.id );
-      res.redirect( '/departments' );
+      res.redirect( req.get( 'Referrer' ) || '/departments' );
     } catch ( error ) {
       next( error );
     }
@@ -28,10 +24,7 @@ export class DepartmentWebController {
 
   showDepartments = async ( req, res, next ) => {
     try {
-      const filters = FilteringQuerySchema.parse( req.query );
-      const sort = SortingQuerySchema.parse( req.query );
-      const pagination = PaginationQuerySchema.parse( req.query );
-      const departments = await this.departmentService.getDepartments( { ...filters, companyId: req.user.company }, sort, pagination );
+      const departments = await this.departmentService.getDepartments( { ...req.query, companyId: req.user.company } );
       res.render( 'departments', { departments } );
     } catch ( error ) {
       next( error );
@@ -40,9 +33,8 @@ export class DepartmentWebController {
 
   updateDepartment = async ( req, res, next ) => {
     try {
-      const body = DepartmentQuerySchema.parse( req.body );
-      await this.departmentService.updateDepartment( req.params.id, body );
-      res.redirect( '/departments' );
+      await this.departmentService.updateDepartment( req.params.id, req.body );
+      res.redirect( req.get( 'Referrer' ) || '/departments' );
     } catch ( error ) {
       next( error );
     }

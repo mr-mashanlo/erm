@@ -40,5 +40,5 @@ docker compose down
 docker compose restart <service>
 
 # Log service
-docker logs <service>
+docker logs <service> -f
 ```

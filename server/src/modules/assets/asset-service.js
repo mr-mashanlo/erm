@@ -1,4 +1,6 @@
 import { withTransaction } from '../../config/transaction.js';
+import { PaginationQuerySchema, SortingQuerySchema } from '../../schemas/filter-query-schema.js';
+import { AssetQuerySchema, FilteringQuerySchema, FilteringTypeQuerySchema, TypeQuerySchema } from './asset-schema.js';
 
 export class AssetService {
 
@@ -7,7 +9,20 @@ export class AssetService {
     this.assetTypeRepository = assetTypeRepository;
   };
 
-  createAsset = async ( asset ) => {
+  archiveAsset = async ( id, archive ) => {
+    return withTransaction( async () => {
+      return await this.assetRepository.archive( id, archive );
+    } );
+  };
+
+  assignAsset = async ( employeeId, assetId ) => {
+    return withTransaction( async () => {
+      return await this.assetRepository.assign( employeeId, assetId );
+    } );
+  };
+
+  createAsset = async ( body ) => {
+    const asset = AssetQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.assetRepository.create( asset );
     } );
@@ -19,10 +34,13 @@ export class AssetService {
     } );
   };
 
-  getAssets = async ( filter, sort, pagination ) => {
+  getAssets = async ( query ) => {
+    const filters = FilteringQuerySchema.parse( query );
+    const sort = SortingQuerySchema.parse( query );
+    const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
-      const assets = await this.assetRepository.find( filter, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      const total = await this.assetRepository.count( filter );
+      const assets = await this.assetRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
+      const total = await this.assetRepository.count( filters );
       return { data: assets, total, ...pagination };
     } );
   };
@@ -33,15 +51,17 @@ export class AssetService {
     } );
   };
 
-  updateAsset = async ( id, asset ) => {
+  updateAsset = async ( id, body ) => {
+    const asset = AssetQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.assetRepository.update( id, asset );
     } );
   };
 
-  createType = async ( asset ) => {
+  createType = async ( body ) => {
+    const type = TypeQuerySchema.parse( body );
     return withTransaction( async () => {
-      return await this.assetTypeRepository.create( asset );
+      return await this.assetTypeRepository.create( type );
     } );
   };
 
@@ -51,27 +71,34 @@ export class AssetService {
     } );
   };
 
-  getTypes = async ( filter ) => {
+  getTypes = async ( query ) => {
+    const filters = FilteringTypeQuerySchema.parse( query );
+    const sort = SortingQuerySchema.parse( query );
+    const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
-      return await this.assetTypeRepository.find( filter );
+      const types = await this.assetTypeRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
+      const total = await this.assetTypeRepository.count( filters );
+      return { data: types, total, ...pagination };
     } );
   };
 
-  updateType = async ( id, asset ) => {
+  moveAsset = async ( assetId, employeeId, assignId ) => {
     return withTransaction( async () => {
-      return await this.assetTypeRepository.update( id, asset );
+      await this.assetRepository.return( assignId );
+      return await this.assetRepository.assign( employeeId, assetId );
     } );
   };
 
-  assignAssetToEmployee = async ( assetId, employeeId ) => {
-    return withTransaction( async () => {
-      return await this.assetRepository.assign( assetId, employeeId );
-    } );
-  };
-
-  returnAssetFromEmployee = async ( id ) => {
+  returnAsset = async ( id ) => {
     return withTransaction( async () => {
       return await this.assetRepository.return( id );
+    } );
+  };
+
+  updateType = async ( id, body ) => {
+    const type = TypeQuerySchema.parse( body );
+    return withTransaction( async () => {
+      return await this.assetTypeRepository.update( id, type );
     } );
   };
 

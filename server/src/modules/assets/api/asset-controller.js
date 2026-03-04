@@ -1,6 +1,3 @@
-import { FilteringQuerySchema, PaginationQuerySchema, SortingQuerySchema } from '../../../schemas/filter-query-schema.js';
-import { AssetQuerySchema } from '../asset-schema.js';
-
 export class AssetApiController {
 
   constructor( assetService ) {
@@ -9,8 +6,7 @@ export class AssetApiController {
 
   createAsset = async ( req, res, next ) => {
     try {
-      const body = AssetQuerySchema.parse( req.body );
-      const asset = await this.assetService.createAsset( { ...body, companyId: req.user.company } );
+      const asset = await this.assetService.createAsset( { ...req.body, companyId: req.user.company } );
       res.json( asset );
     } catch ( error ) {
       next( error );
@@ -28,10 +24,7 @@ export class AssetApiController {
 
   getAssets = async ( req, res, next ) => {
     try {
-      const filters = FilteringQuerySchema.parse( req.query );
-      const sort = SortingQuerySchema.parse( req.query );
-      const pagination = PaginationQuerySchema.parse( req.query );
-      const assets = await this.assetService.getAssets( { ...filters, companyId: req.user.company }, sort, pagination );
+      const assets = await this.assetService.getAssets( { ...req.query, companyId: req.user.company } );
       res.json( assets );
     } catch ( error ) {
       next( error );
@@ -49,8 +42,7 @@ export class AssetApiController {
 
   updateAsset = async ( req, res, next ) => {
     try {
-      const body = AssetQuerySchema.parse( req.body );
-      const asset = await this.assetService.updateAsset( req.params.id, body );
+      const asset = await this.assetService.updateAsset( req.params.id, req.body );
       res.json( asset );
     } catch ( error ) {
       next( error );

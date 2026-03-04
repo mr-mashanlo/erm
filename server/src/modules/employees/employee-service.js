@@ -1,4 +1,6 @@
 import { withTransaction } from '../../config/transaction.js';
+import { PaginationQuerySchema, SortingQuerySchema } from '../../schemas/filter-query-schema.js';
+import { EmployeeQuerySchema, FilteringQuerySchema } from './employee-schema.js';
 
 export class EmployeeService {
 
@@ -6,7 +8,20 @@ export class EmployeeService {
     this.employeeRepository = employeeRepository;
   };
 
-  createEmployee = async ( employee ) => {
+  assignEmployee = async ( departmentId, employeeId ) => {
+    return withTransaction( async () => {
+      return await this.employeeRepository.assign( departmentId, employeeId );
+    } );
+  };
+
+  archiveEmployee = async ( id, archive ) => {
+    return withTransaction( async () => {
+      return await this.employeeRepository.archive( id, archive );
+    } );
+  };
+
+  createEmployee = async ( body ) => {
+    const employee = EmployeeQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.employeeRepository.create( employee );
     } );
@@ -18,10 +33,13 @@ export class EmployeeService {
     } );
   };
 
-  getEmployees = async ( filter, sort, pagination ) => {
+  getEmployees = async ( query ) => {
+    const filters = FilteringQuerySchema.parse( query );
+    const sort = SortingQuerySchema.parse( query );
+    const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
-      const employees = await this.employeeRepository.find( filter, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      const total = await this.employeeRepository.count( filter );
+      const employees = await this.employeeRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
+      const total = await this.employeeRepository.count( filters );
       return { data: employees, total, ...pagination };
     } );
   };
@@ -38,7 +56,8 @@ export class EmployeeService {
     } );
   };
 
-  updateEmployee = async ( id, employee ) => {
+  updateEmployee = async ( id, body ) => {
+    const employee = EmployeeQuerySchema.pick( { name: true, departmentId: true } ).parse( body );
     return withTransaction( async () => {
       return await this.employeeRepository.update( id, employee );
     } );
