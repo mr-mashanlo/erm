@@ -18,7 +18,7 @@ export class UserService {
     } );
   };
 
-  refreshToken = async ( refreshToken ) => {
+  refreshToken = async refreshToken => {
     return withTransaction( async () => {
       const hashedRefreshToken = this.tokenService.hashRefreshToken( refreshToken );
       const user = await this.userRepository.findByRefreshToken( hashedRefreshToken );

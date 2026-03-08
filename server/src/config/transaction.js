@@ -12,7 +12,7 @@ export const getExecutor = async () => {
   return await poolPromise;
 };
 
-export const withTransaction = async ( work ) => {
+export const withTransaction = async work => {
   const pool = await poolPromise;
   const transaction = new sql.Transaction( pool );
 

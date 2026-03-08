@@ -6,7 +6,7 @@ export class AssetTypeRepository {
     this.db = db;
   }
 
-  count = async ( filters ) => {
+  count = async filters => {
     const executor = await this.db.getExecutor();
     const request = await executor.request();
     let query = 'SELECT * FROM asset_types WHERE 1=1';
@@ -35,7 +35,7 @@ export class AssetTypeRepository {
     return result.recordset[0] || null;
   };
 
-  delete = async ( id ) => {
+  delete = async id => {
     const executor = await this.db.getExecutor();
     await executor.request()
       .input( 'id', this.db.sql.Int, id )
@@ -65,7 +65,7 @@ export class AssetTypeRepository {
     return result.recordset;
   };
 
-  seedDefaultAssets = async ( companyId ) => {
+  seedDefaultAssets = async companyId => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'companyId', this.db.sql.Int, companyId )

@@ -13,7 +13,7 @@ export class RoleRepository {
     return result.recordset;
   };
 
-  find = async ( companyId ) => {
+  find = async companyId => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'companyId', this.db.sql.Int, companyId )
@@ -21,7 +21,7 @@ export class RoleRepository {
     return result.recordset;
   };
 
-  findById = async ( id ) => {
+  findById = async id => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'id', this.db.sql.Int, id )
@@ -29,7 +29,7 @@ export class RoleRepository {
     return result.recordset[0] || null;
   };
 
-  seedDefaultRoles = async ( companyId ) => {
+  seedDefaultRoles = async companyId => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'companyId', this.db.sql.Int, companyId )

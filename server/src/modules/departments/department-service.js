@@ -8,20 +8,20 @@ export class DepartmentService {
     this.departmentRepository = departmentRepository;
   };
 
-  createDepartment = async ( body ) => {
+  createDepartment = async body => {
     const department = DepartmentQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.departmentRepository.create( department );
     } );
   };
 
-  deleteDepartment = async ( id ) => {
+  deleteDepartment = async id => {
     return withTransaction( async () => {
       await this.departmentRepository.delete( id );
     } );
   };
 
-  getDepartments = async ( query ) => {
+  getDepartments = async query => {
     const filters = FilteringQuerySchema.parse( query );
     const sort = SortingQuerySchema.parse( query );
     const pagination = PaginationQuerySchema.parse( query );
@@ -32,13 +32,13 @@ export class DepartmentService {
     } );
   };
 
-  getDepartmentById = async ( id ) => {
+  getDepartmentById = async id => {
     return withTransaction( async () => {
       return await this.departmentRepository.findById( id );
     } );
   };
 
-  getDepartmentBySlug = async ( slug ) => {
+  getDepartmentBySlug = async slug => {
     return withTransaction( async () => {
       return await this.departmentRepository.findBySlug( slug );
     } );

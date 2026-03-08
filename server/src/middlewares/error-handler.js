@@ -1,6 +1,6 @@
 import { AuthError } from '../errors/auth-error.js';
 
-// eslint-disable-next-line no-unused-vars
+ 
 export const errorHandler = ( err, req, res, next ) => {
   console.log( err );
   if ( err instanceof AuthError ) {

@@ -21,20 +21,20 @@ export class AssetService {
     } );
   };
 
-  createAsset = async ( body ) => {
+  createAsset = async body => {
     const asset = AssetQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.assetRepository.create( asset );
     } );
   };
 
-  deleteAsset = async ( id ) => {
+  deleteAsset = async id => {
     return withTransaction( async () => {
       await this.assetRepository.delete( id );
     } );
   };
 
-  getAssets = async ( query ) => {
+  getAssets = async query => {
     const filters = FilteringQuerySchema.parse( query );
     const sort = SortingQuerySchema.parse( query );
     const pagination = PaginationQuerySchema.parse( query );
@@ -45,7 +45,7 @@ export class AssetService {
     } );
   };
 
-  getAssetById = async ( id ) => {
+  getAssetById = async id => {
     return withTransaction( async () => {
       return await this.assetRepository.findById( id );
     } );
@@ -58,20 +58,20 @@ export class AssetService {
     } );
   };
 
-  createType = async ( body ) => {
+  createType = async body => {
     const type = TypeQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.assetTypeRepository.create( type );
     } );
   };
 
-  deleteType = async ( id ) => {
+  deleteType = async id => {
     return withTransaction( async () => {
       await this.assetTypeRepository.delete( id );
     } );
   };
 
-  getTypes = async ( query ) => {
+  getTypes = async query => {
     const filters = FilteringTypeQuerySchema.parse( query );
     const sort = SortingQuerySchema.parse( query );
     const pagination = PaginationQuerySchema.parse( query );
@@ -89,7 +89,7 @@ export class AssetService {
     } );
   };
 
-  returnAsset = async ( id ) => {
+  returnAsset = async id => {
     return withTransaction( async () => {
       return await this.assetRepository.return( id );
     } );

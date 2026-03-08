@@ -8,11 +8,11 @@ export const EmployeeQuerySchema = z.object( {
 
 export const FilteringQuerySchema = z.object( {
   search: z.preprocess(
-    ( v ) => v !== '' ? v : undefined,
+    v => v !== '' ? v : undefined,
     z.string().optional()
   ),
   departmentId: z.preprocess(
-    ( v ) => v !== '' ? v : undefined,
+    v => v !== '' ? v : undefined,
     z.xor( [ z.string(), z.number() ] ).optional()
   ),
   archived: z.boolean().optional()

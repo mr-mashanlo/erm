@@ -20,20 +20,20 @@ export class EmployeeService {
     } );
   };
 
-  createEmployee = async ( body ) => {
+  createEmployee = async body => {
     const employee = EmployeeQuerySchema.parse( body );
     return withTransaction( async () => {
       return await this.employeeRepository.create( employee );
     } );
   };
 
-  deleteEmployee = async ( id ) => {
+  deleteEmployee = async id => {
     return withTransaction( async () => {
       await this.employeeRepository.delete( id );
     } );
   };
 
-  getEmployees = async ( query ) => {
+  getEmployees = async query => {
     const filters = FilteringQuerySchema.parse( query );
     const sort = SortingQuerySchema.parse( query );
     const pagination = PaginationQuerySchema.parse( query );
@@ -44,13 +44,13 @@ export class EmployeeService {
     } );
   };
 
-  getEmployeeById = async ( id ) => {
+  getEmployeeById = async id => {
     return withTransaction( async () => {
       return await this.employeeRepository.findById( id );
     } );
   };
 
-  getEmployeeBySlug = async ( slug ) => {
+  getEmployeeBySlug = async slug => {
     return withTransaction( async () => {
       return await this.employeeRepository.findBySlug( slug );
     } );

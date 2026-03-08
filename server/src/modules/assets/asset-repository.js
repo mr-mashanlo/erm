@@ -26,7 +26,7 @@ export class AssetRepository {
     return result.recordset[0] || null;
   };
 
-  count = async ( filters ) => {
+  count = async filters => {
     const executor = await this.db.getExecutor();
     const request = executor.request();
     let query = `
@@ -80,7 +80,7 @@ export class AssetRepository {
     return result.recordset[0] || null;
   };
 
-  delete = async ( id ) => {
+  delete = async id => {
     const executor = await this.db.getExecutor();
     await executor.request()
       .input( 'id', this.db.sql.Int, id )
@@ -133,7 +133,7 @@ export class AssetRepository {
     return result.recordset;
   };
 
-  findById = async ( id ) => {
+  findById = async id => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'id', this.db.sql.Int, id )
@@ -141,7 +141,7 @@ export class AssetRepository {
     return result.recordset[0] || null;
   };
 
-  return = async ( id ) => {
+  return = async id => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'id', this.db.sql.Int, id )

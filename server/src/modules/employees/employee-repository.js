@@ -25,7 +25,7 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
-  count = async ( filters ) => {
+  count = async filters => {
     const executor = await this.db.getExecutor();
     const request = executor.request();
     let query = 'SELECT * FROM employees WHERE 1=1';
@@ -70,7 +70,7 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
-  delete = async ( id ) => {
+  delete = async id => {
     const executor = await this.db.getExecutor();
     await executor.request()
       .input( 'id', this.db.sql.Int, id )
@@ -126,7 +126,7 @@ export class EmployeeRepository {
     } ) );
   };
 
-  findById = async ( id ) => {
+  findById = async id => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'id', this.db.sql.Int, id )
@@ -134,7 +134,7 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
-  findBySlug = async ( slug ) => {
+  findBySlug = async slug => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'slug', this.db.sql.NVarChar, slug )
