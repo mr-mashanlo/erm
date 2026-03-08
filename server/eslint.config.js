@@ -6,7 +6,7 @@ import globals from 'globals';
 
 export default defineConfig( [
   {
-    files: [ '**/*.{js}' ],
+    files: [ '**/*.{js,mjs,cjs}' ],
     ignores: [ 'public/**/*.js' ],
     extends: [ 'js/recommended' ],
     languageOptions: { globals: globals.node },
