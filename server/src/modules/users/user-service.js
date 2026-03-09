@@ -1,5 +1,6 @@
 import { withTransaction } from '../../config/transaction.js';
-import { AuthError } from '../../errors/auth-error.js';
+import { BadRequest } from '../../errors/bad-request.js';
+import { Unauthorized } from '../../errors/unauthorized.js';
 
 export class UserService {
 
@@ -23,7 +24,7 @@ export class UserService {
       const hashedRefreshToken = this.tokenService.hashRefreshToken( refreshToken );
       const user = await this.userRepository.findByRefreshToken( hashedRefreshToken );
 
-      if ( +user.expiredAt < Date.now() ) throw new AuthError( 401, 'unauthorized', [ { name: 'token', message: 'Token has expired' } ] );
+      if ( +user.expiredAt < Date.now() ) throw new Unauthorized( [ { name: 'token', message: 'Token has expired' } ] );
 
       const newAccessToken = this.tokenService.generateAccessToken( { id: user.id, email: user.email, company: user.company.id, role: user.role.name } );
       const newRefreshToken = this.tokenService.generateRefreshToken();
@@ -37,10 +38,10 @@ export class UserService {
   signin = async ( { email, password } ) => {
     return await withTransaction( async () => {
       const user = await this.userRepository.findByEmail( email );
-      if ( !user ) throw new AuthError( 404, 'bad Request', [ { name: 'email', message: 'Email is not exist' } ] );
+      if ( !user ) throw new BadRequest( [ { name: 'email', message: 'Email is not exist' } ] );
 
       const isValid = this.passwordService.compare( password, user.password );
-      if ( !isValid ) throw new AuthError( 400, 'bad Request', [ { name: 'password', message: 'Incorrect password' } ] );
+      if ( !isValid ) throw new BadRequest( [ { name: 'password', message: 'Incorrect password' } ] );
 
       const accessToken = this.tokenService.generateAccessToken( { id: user.id, email: user.email, company: user.company.id, role: user.role.name } );
       const refreshToken = this.tokenService.generateRefreshToken();
@@ -54,7 +55,7 @@ export class UserService {
   signup = async ( { email, password, companyName } ) => {
     return await withTransaction( async () => {
       const candidate = await this.userRepository.findByEmail( email );
-      if ( candidate ) throw new AuthError( 404, 'bad Request', [ { name: 'email', message: 'Email is already exist' } ] );
+      if ( candidate ) throw new BadRequest( [ { name: 'email', message: 'Email is already exist' } ] );
 
       const company = await this.companyRepository.create( { name: companyName } );
 

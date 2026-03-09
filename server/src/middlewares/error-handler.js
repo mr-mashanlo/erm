@@ -1,13 +1,26 @@
-import { AuthError } from '../errors/auth-error.js';
+import { CustomError } from '../errors/custom-error.js';
+import { Unauthorized } from '../errors/unauthorized.js';
 
- 
-export const errorHandler = ( err, req, res, next ) => {
-  console.log( err );
-  if ( err instanceof AuthError ) {
-    const { status, message, errors } = err;
-    return res.status( status ).json( { message, errors } );
+// eslint-disable-next-line no-unused-vars
+export const errorHandler = ( error, req, res, next ) => {
+  console.log( error );
+  if ( error instanceof Unauthorized ) {
+    const { status, message, errors } = error;
+    return res.status( status ).format( {
+      'application/json': () => res.json( { message, errors } ),
+      'text/html': () => res.redirect( '/auth/signin' )
+    } );
+  } else if ( error instanceof CustomError ) {
+    const { status, message, errors } = error;
+    return res.status( status ).format( {
+      'application/json': () => res.json( { message, errors } ),
+      'text/html': () => res.render( 'error', { error } )
+    } );
   } else {
-    const { message } = err;
-    return res.status( 500 ).json( { message, errors: [] } );
+    const { message } = error;
+    return res.status( 500 ).format( {
+      'application/json': () => res.json( { message, errors: [] } ),
+      'text/html': () => res.render( 'error', { error } )
+    } );
   }
 };

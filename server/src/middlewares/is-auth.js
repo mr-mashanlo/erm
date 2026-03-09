@@ -1,3 +1,4 @@
+import { Unauthorized } from '../errors/unauthorized.js';
 import { tokenService, userService } from '../modules/users/user-container.js';
 
 export const isAuth = async ( req, res, next ) => {
@@ -17,6 +18,6 @@ export const isAuth = async ( req, res, next ) => {
     res.locals.role = tokenService.verifyAccessToken( accessToken ).role;
     next();
   } catch {
-    return res.status( 401 ).json( { message: 'unauthorized', errors: [ { name: 'token', message: 'Token not provided' } ] } );
+    next( new Unauthorized( [ { name: 'token', message: 'Token not provided' } ] ) );
   }
 };

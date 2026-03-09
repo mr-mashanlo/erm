@@ -1,9 +1,7 @@
-export class AuthError extends Error {
-
+export class CustomError extends Error {
   constructor( status, message, errors ) {
     super( message );
     this.status = status;
     this.errors = errors;
   }
-
 }
