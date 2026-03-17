@@ -49,9 +49,24 @@
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
                   </a>
                 </th>
-                <th class="px-3 py-4.5">Email</th>
-                <th class="px-3 py-4.5">Assets</th>
-                <th class="px-3 py-4.5">Created at</th>
+                <th class="px-3 py-4.5">
+                  <a href="<%= buildUrl({ sort: 'email', order: query.order === 'asc' ? 'desc' : 'asc' }) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                    <span>Email</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </a>
+                </th>
+                <th class="px-3 py-4.5">
+                  <a href="<%= buildUrl({ sort: 'assets', order: query.order === 'asc' ? 'desc' : 'asc' }) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                    <span>Assets</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </a>
+                </th>
+                <th class="px-3 py-4.5">
+                  <a href="<%= buildUrl({ sort: 'createdAt', order: query.order === 'asc' ? 'desc' : 'asc' }) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                    <span>Created at</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                  </a>
+                </th>
               </tr>
             </thead>
             <tbody>
