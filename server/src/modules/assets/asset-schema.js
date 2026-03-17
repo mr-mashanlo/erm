@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const AssetQuerySchema = z.object( {
   name: z.string(),
   serialNumber: z.string(),
-  typeId: z.xor( [ z.string(), z.number() ] )
+  typeId: z.xor( [ z.string(), z.number() ] ),
+  companyId: z.xor( [ z.string(), z.number() ] )
 } );
 
 export const TypeQuerySchema = z.object( {
@@ -16,10 +17,6 @@ export const FilteringQuerySchema = z.object( {
     z.string().optional()
   ),
   employeeId: z.preprocess(
-    v => v !== '' ? v : undefined,
-    z.xor( [ z.string(), z.number() ] ).optional()
-  ),
-  departmentId: z.preprocess(
     v => v !== '' ? v : undefined,
     z.xor( [ z.string(), z.number() ] ).optional()
   ),

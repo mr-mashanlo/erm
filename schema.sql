@@ -27,19 +27,11 @@ CREATE TABLE user_role (
   roleId INT REFERENCES roles(id) NOT NULL,
 );
 
-CREATE TABLE departments (
-  id INT PRIMARY KEY IDENTITY(1, 1),
-  name NVARCHAR(512) NOT NULL,
-  slug NVARCHAR(512) NOT NULL,
-  companyId INT REFERENCES companies(id) NOT NULL,
-);
-
 CREATE TABLE employees (
   id INT PRIMARY KEY IDENTITY(1, 1),
   name NVARCHAR(100) NOT NULL,
   slug NVARCHAR(100) NOT NULL,
   companyId INT REFERENCES companies(id) NOT NULL,
-  departmentId INT REFERENCES departments(id) NOT NULL,
   createdAt BIGINT,
   archived BIT,
 );

@@ -8,7 +8,7 @@ export const errorHandler = ( error, req, res, next ) => {
     const { status, message, errors } = error;
     return res.status( status ).format( {
       'application/json': () => res.json( { message, errors } ),
-      'text/html': () => res.redirect( '/auth/signin' )
+      'text/html': () => res.redirect( '/signin' )
     } );
   } else if ( error instanceof CustomError ) {
     const { status, message, errors } = error;

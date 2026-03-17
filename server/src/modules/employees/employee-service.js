@@ -8,9 +8,9 @@ export class EmployeeService {
     this.employeeRepository = employeeRepository;
   };
 
-  assignEmployee = async ( departmentId, employeeId ) => {
+  assignEmployee = async employeeId => {
     return withTransaction( async () => {
-      return await this.employeeRepository.assign( departmentId, employeeId );
+      return await this.employeeRepository.assign( employeeId );
     } );
   };
 
@@ -39,8 +39,7 @@ export class EmployeeService {
     const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
       const employees = await this.employeeRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      const total = await this.employeeRepository.count( filters );
-      return { data: employees, total, ...pagination };
+      return { data: employees, total: employees ? employees.length : 0, ...pagination };
     } );
   };
 
@@ -57,7 +56,7 @@ export class EmployeeService {
   };
 
   updateEmployee = async ( id, body ) => {
-    const employee = EmployeeQuerySchema.pick( { name: true, departmentId: true } ).parse( body );
+    const employee = EmployeeQuerySchema.pick( { name: true } ).parse( body );
     return withTransaction( async () => {
       return await this.employeeRepository.update( id, employee );
     } );

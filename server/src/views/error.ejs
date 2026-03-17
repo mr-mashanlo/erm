@@ -26,7 +26,7 @@
   <body class="text-xs">
     <section class="p-4 sm:p-10 leading-6">
       <h1 class="font-bold">Error <%= error.status %></h1>
-      <p class="mt-4"><%= error.errors.map( item => item.message ).join( ', ' ) %></p>
+      <p class="mt-4"><%= error.errors?.map( item => item.message ).join( ', ' ) %></p>
     </section>
   </body>
 

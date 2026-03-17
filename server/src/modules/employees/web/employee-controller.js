@@ -1,8 +1,7 @@
 export class EmployeeWebController {
 
-  constructor( employeeService, departmentService ) {
+  constructor( employeeService ) {
     this.employeeService = employeeService;
-    this.departmentService = departmentService;
   };
 
   archiveEmployee = async ( req, res, next ) => {
@@ -45,8 +44,7 @@ export class EmployeeWebController {
     try {
       const archivedEmployees = await this.employeeService.getEmployees( { companyId: req.user.company, archived: true, limit: '100' } );
       const employees = await this.employeeService.getEmployees( { ...req.query, archived: false } );
-      const departments = await this.departmentService.getDepartments( { limit: '100' } );
-      res.render( 'employees', { employees, archivedEmployees, departments } );
+      res.render( 'employees', { employees, archivedEmployees } );
     } catch ( error ) {
       next( error );
     }

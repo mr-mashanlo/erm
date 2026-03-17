@@ -2,12 +2,11 @@ import { Router } from 'express';
 
 import { isAuth } from '../../../middlewares/is-auth.js';
 import { requireRoles } from '../../../middlewares/require-roles.js';
-import { departmentService } from '../../departments/department-container.js';
 import { employeeService } from '../employee-container.js';
 import { EmployeeWebController } from './employee-controller.js';
 
 const router = Router();
-const employeeWebController = new EmployeeWebController( employeeService, departmentService );
+const employeeWebController = new EmployeeWebController( employeeService );
 
 router.post( '/employees', isAuth, requireRoles( [ 'admin' ] ), employeeWebController.createEmployee );
 router.get( '/employees', isAuth, requireRoles( [ 'admin' ] ), employeeWebController.showEmployees );

@@ -26,48 +26,6 @@ export class AssetRepository {
     return result.recordset[0] || null;
   };
 
-  count = async filters => {
-    const executor = await this.db.getExecutor();
-    const request = executor.request();
-    let query = `
-      SELECT assets.id as id, assets.name as name, assets.serialNumber as serialNumber, asset_employee.id as assignId, asset_types.name as type
-      FROM assets
-      LEFT JOIN asset_employee ON assets.id = asset_employee.assetId AND asset_employee.returnedAt IS NULL AND asset_employee.assignedAt IS NOT NULL
-      LEFT JOIN asset_types ON assets.typeId = asset_types.id
-      WHERE 1=1
-    `;
-
-    if ( filters.search ) {
-      request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
-      query += ' AND assets.name LIKE @name';
-    }
-
-    if ( filters.companyId ) {
-      request.input( 'companyId', this.db.sql.Int, filters.companyId );
-      query += ' AND assets.companyId = @companyId';
-    }
-
-    if ( filters.employeeId ) {
-      request.input( 'employeeId', this.db.sql.Int, filters.employeeId );
-      query += ' AND asset_employee.employeeId = @employeeId';
-    }
-
-    if ( filters.archived ) {
-      request.input( 'archived', this.db.sql.Bit, true );
-      query += ' AND assets.archived = @archived';
-    } else {
-      request.input( 'archived', this.db.sql.Bit, false );
-      query += ' AND assets.archived = @archived';
-    }
-
-    if ( filters.orphaned ) {
-      query += ' AND asset_employee.assetId IS NULL';
-    }
-
-    const result = await request.query( query );
-    return result.recordset.length;
-  };
-
   create = async ( { name, serialNumber, companyId, typeId } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
@@ -76,7 +34,8 @@ export class AssetRepository {
       .input( 'serialNumber', this.db.sql.NVarChar, serialNumber )
       .input( 'typeId', this.db.sql.Int, typeId )
       .input( 'companyId', this.db.sql.Int, companyId )
-      .query( 'INSERT INTO assets (name, slug, serialNumber, typeId, companyId) OUTPUT inserted.* VALUES (@name, @slug, @serialNumber, @typeId, @companyId)' );
+      .input( 'archived', this.db.sql.Bit, false )
+      .query( 'INSERT INTO assets (name, slug, serialNumber, typeId, companyId, archived) OUTPUT inserted.* VALUES (@name, @slug, @serialNumber, @typeId, @companyId, @archived)' );
     return result.recordset[0] || null;
   };
 
@@ -92,10 +51,11 @@ export class AssetRepository {
     const executor = await this.db.getExecutor();
     const request = await executor.request();
     let query = `
-      SELECT assets.id as id, assets.name as name, assets.serialNumber as serialNumber, asset_employee.id as assignId, asset_types.name as type
+      SELECT assets.id as id, assets.name as name, assets.serialNumber as serialNumber, asset_employee.id as assignId, asset_employee.assignedAt as assignedAt, asset_types.name as type, employees.name as employee
       FROM assets
       LEFT JOIN asset_employee ON assets.id = asset_employee.assetId AND asset_employee.returnedAt IS NULL AND asset_employee.assignedAt IS NOT NULL
       LEFT JOIN asset_types ON assets.typeId = asset_types.id
+      LEFT JOIN employees ON employees.id = asset_employee.employeeId
       WHERE 1=1
     `;
 

@@ -6,13 +6,12 @@ export class EmployeeRepository {
     this.db = db;
   }
 
-  assign = async ( departmentId, employeeId ) => {
+  assign = async employeeId => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'id', this.db.sql.Int, employeeId )
-      .input( 'departmentId', this.db.sql.Int, departmentId )
       .input( 'archived', this.db.sql.Bit, false )
-      .query( 'UPDATE employees SET departmentId = @departmentId, archived = @archived OUTPUT inserted.* WHERE id = @id' );
+      .query( 'UPDATE employees SET, archived = @archived OUTPUT inserted.* WHERE id = @id' );
     return result.recordset[0] || null;
   };
 
@@ -25,48 +24,15 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
-  count = async filters => {
-    const executor = await this.db.getExecutor();
-    const request = executor.request();
-    let query = 'SELECT * FROM employees WHERE 1=1';
-
-    if ( filters.search ) {
-      request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
-      query += ' AND employees.name LIKE @name';
-    }
-
-    if ( filters.companyId ) {
-      request.input( 'companyId', this.db.sql.Int, filters.companyId );
-      query += ' AND employees.companyId = @companyId';
-    }
-
-    if ( filters.departmentId ) {
-      request.input( 'departmentId', this.db.sql.Int, filters.departmentId );
-      query += ' AND employees.departmentId = @departmentId';
-    }
-
-    if ( filters.archived ) {
-      request.input( 'archived', this.db.sql.Bit, true );
-      query += ' AND employees.archived = @archived';
-    } else {
-      request.input( 'archived', this.db.sql.Bit, false );
-      query += ' AND employees.archived = @archived';
-    }
-
-    const result = await request.query( query );
-    return result.recordset.length;
-  };
-
-  create = async ( { name, companyId, departmentId } ) => {
+  create = async ( { name, companyId } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'name', this.db.sql.NVarChar, name )
       .input( 'slug', this.db.sql.NVarChar, slug( name ) )
       .input( 'companyId', this.db.sql.Int, companyId )
-      .input( 'departmentId', this.db.sql.Int, departmentId )
       .input( 'createdAt', this.db.sql.BigInt, Date.now() )
       .input( 'archived', this.db.sql.Bit, false )
-      .query( 'INSERT INTO employees (name, slug, companyId, departmentId, createdAt, archived) OUTPUT inserted.* VALUES (@name, @slug, @companyId, @departmentId, @createdAt, @archived)' );
+      .query( 'INSERT INTO employees (name, slug, companyId, createdAt, archived) OUTPUT inserted.* VALUES (@name, @slug, @companyId, @createdAt, @archived)' );
     return result.recordset[0] || null;
   };
 
@@ -82,10 +48,16 @@ export class EmployeeRepository {
     const executor = await this.db.getExecutor();
     const request = await executor.request();
     let query = `
-      SELECT employees.*, departments.name as departmentName
+      SELECT employees.*, users.email as email, (
+          SELECT asset_employee.id
+          FROM asset_employee
+          WHERE asset_employee.employeeId = employees.id AND asset_employee.returnedAt IS NULL
+          FOR JSON AUTO
+        ) as assets
       FROM employees
-      LEFT JOIN departments ON departments.id = employees.departmentId
-      WHERE 1=1
+      LEFT JOIN user_employee ON user_employee.employeeId = employees.id
+      LEFT JOIN users ON users.id = user_employee.userId
+      WHERE 1 = 1
     `;
 
     if ( filters.search ) {
@@ -96,11 +68,6 @@ export class EmployeeRepository {
     if ( filters.companyId ) {
       request.input( 'companyId', this.db.sql.Int, filters.companyId );
       query += ' AND employees.companyId = @companyId';
-    }
-
-    if ( filters.departmentId ) {
-      request.input( 'departmentId', this.db.sql.Int, filters.departmentId );
-      query += ' AND employees.departmentId = @departmentId';
     }
 
     if ( filters.archived ) {
@@ -119,10 +86,11 @@ export class EmployeeRepository {
       id: raw.id,
       name: raw.name,
       slug: raw.slug,
+      email: raw.email,
       archived: raw.archived,
       createdAt: raw.createdAt,
-      company: { id: raw.companyId },
-      department: { id: raw.departmentId, name: raw.departmentName }
+      assets: JSON.parse( raw.assets ),
+      company: { id: raw.companyId }
     } ) );
   };
 
@@ -142,14 +110,13 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
-  update = async ( id, { name, departmentId } ) => {
+  update = async ( id, { name } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'id', this.db.sql.Int, id )
       .input( 'name', this.db.sql.NVarChar, name )
       .input( 'slug', this.db.sql.NVarChar, slug( name ) )
-      .input( 'departmentId', this.db.sql.Int, departmentId )
-      .query( 'UPDATE employees SET name = @name, slug = @slug, departmentId = @departmentId OUTPUT inserted.* WHERE id = @id' );
+      .query( 'UPDATE employees SET name = @name, slug = @slug OUTPUT inserted.* WHERE id = @id' );
     return result.recordset[0] || null;
   };
 

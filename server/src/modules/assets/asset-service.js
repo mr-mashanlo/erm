@@ -40,8 +40,7 @@ export class AssetService {
     const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
       const assets = await this.assetRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      const total = await this.assetRepository.count( filters );
-      return { data: assets, total, ...pagination };
+      return { data: assets, total: assets ? assets.length : 0, ...pagination };
     } );
   };
 
@@ -77,8 +76,7 @@ export class AssetService {
     const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
       const types = await this.assetTypeRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      const total = await this.assetTypeRepository.count( filters );
-      return { data: types, total, ...pagination };
+      return { data: types, total: types ? types.length : 0, ...pagination };
     } );
   };
 
