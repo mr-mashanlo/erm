@@ -1,12 +1,11 @@
 import { withTransaction } from '../../config/transaction.js';
-import { PaginationQuerySchema, SortingQuerySchema } from '../../schemas/filter-query-schema.js';
-import { AssetQuerySchema, FilteringQuerySchema, FilteringTypeQuerySchema, TypeQuerySchema } from './asset-schema.js';
+import { PaginationQuerySchema } from '../../schemas/pagination-query-schema.js';
+import { AssetFilteringSchema, AssetSchema, AssetSortingSchema } from './asset-schema.js';
 
 export class AssetService {
 
-  constructor( assetRepository, assetTypeRepository ) {
+  constructor( assetRepository ) {
     this.assetRepository = assetRepository;
-    this.assetTypeRepository = assetTypeRepository;
   };
 
   archiveAsset = async ( id, archive ) => {
@@ -22,7 +21,7 @@ export class AssetService {
   };
 
   createAsset = async body => {
-    const asset = AssetQuerySchema.parse( body );
+    const asset = AssetSchema.parse( body );
     return withTransaction( async () => {
       return await this.assetRepository.create( asset );
     } );
@@ -35,8 +34,8 @@ export class AssetService {
   };
 
   getAssets = async query => {
-    const filters = FilteringQuerySchema.parse( query );
-    const sort = SortingQuerySchema.parse( query );
+    const filters = AssetFilteringSchema.parse( query );
+    const sort = AssetSortingSchema.parse( query );
     const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
       const assets = await this.assetRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
@@ -51,32 +50,9 @@ export class AssetService {
   };
 
   updateAsset = async ( id, body ) => {
-    const asset = AssetQuerySchema.parse( body );
+    const asset = AssetSchema.pick( { name: true, serialNumber: true, typeId: true } ).parse( body );
     return withTransaction( async () => {
       return await this.assetRepository.update( id, asset );
-    } );
-  };
-
-  createType = async body => {
-    const type = TypeQuerySchema.parse( body );
-    return withTransaction( async () => {
-      return await this.assetTypeRepository.create( type );
-    } );
-  };
-
-  deleteType = async id => {
-    return withTransaction( async () => {
-      await this.assetTypeRepository.delete( id );
-    } );
-  };
-
-  getTypes = async query => {
-    const filters = FilteringTypeQuerySchema.parse( query );
-    const sort = SortingQuerySchema.parse( query );
-    const pagination = PaginationQuerySchema.parse( query );
-    return withTransaction( async () => {
-      const types = await this.assetTypeRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
-      return { data: types, total: types ? types.length : 0, ...pagination };
     } );
   };
 
@@ -90,13 +66,6 @@ export class AssetService {
   returnAsset = async id => {
     return withTransaction( async () => {
       return await this.assetRepository.return( id );
-    } );
-  };
-
-  updateType = async ( id, body ) => {
-    const type = TypeQuerySchema.parse( body );
-    return withTransaction( async () => {
-      return await this.assetTypeRepository.update( id, type );
     } );
   };
 

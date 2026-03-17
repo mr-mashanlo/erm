@@ -24,14 +24,14 @@ export class EmployeeRepository {
     return result.recordset[0] || null;
   };
 
-  create = async ( { name, companyId } ) => {
+  create = async ( { name, companyId, archived } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'name', this.db.sql.NVarChar, name )
       .input( 'slug', this.db.sql.NVarChar, slug( name ) )
       .input( 'companyId', this.db.sql.Int, companyId )
       .input( 'createdAt', this.db.sql.BigInt, Date.now() )
-      .input( 'archived', this.db.sql.Bit, false )
+      .input( 'archived', this.db.sql.Bit, archived )
       .query( 'INSERT INTO employees (name, slug, companyId, createdAt, archived) OUTPUT inserted.* VALUES (@name, @slug, @companyId, @createdAt, @archived)' );
     return result.recordset[0] || null;
   };
@@ -70,10 +70,12 @@ export class EmployeeRepository {
       query += ' AND employees.companyId = @companyId';
     }
 
-    if ( filters.archived ) {
+    if ( filters.archived === true ) {
       request.input( 'archived', this.db.sql.Bit, true );
       query += ' AND employees.archived = @archived';
-    } else {
+    }
+
+    if ( filters.archived === false ) {
       request.input( 'archived', this.db.sql.Bit, false );
       query += ' AND employees.archived = @archived';
     }

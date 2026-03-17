@@ -1,7 +1,8 @@
 export class AssetWebController {
 
-  constructor( assetService, employeeService ) {
+  constructor( assetService, assetTypeService, employeeService ) {
     this.assetService = assetService;
+    this.assetTypeService = assetTypeService;
     this.employeeService = employeeService;
   };
 
@@ -26,7 +27,7 @@ export class AssetWebController {
 
   createAsset = async ( req, res, next ) => {
     try {
-      await this.assetService.createAsset( { ...req.body, companyId: req.user.company } );
+      await this.assetService.createAsset( { ...req.body, companyId: req.user.company, archived: false } );
       res.redirect( req.get( 'Referrer' ) || '/assets' );
     } catch ( error ) {
       next( error );
@@ -62,11 +63,10 @@ export class AssetWebController {
 
   showAssets = async ( req, res, next ) => {
     try {
-      const archivedAssets = await this.assetService.getAssets( { companyId: req.user.company, archived: false, orphaned: true, limit: '100' } );
-      const assets = await this.assetService.getAssets( { ...req.query, companyId: req.user.company, archived: false } );
-      const types = await this.assetService.getTypes( { companyId: req.user.company, limit: '100' } );
+      const assets = await this.assetService.getAssets( { companyId: req.user.company, archived: false, ...req.query } );
+      const types = await this.assetTypeService.getTypes( { companyId: req.user.company, limit: '100' } );
       const employees = await this.employeeService.getEmployees( { companyId: req.user.company, archived: false, limit: '100' } );
-      res.render( 'assets', { assets, archivedAssets, types, employees } );
+      res.render( 'assets', { assets, types, employees } );
     } catch ( error ) {
       next( error );
     }

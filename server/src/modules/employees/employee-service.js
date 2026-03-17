@@ -1,6 +1,6 @@
 import { withTransaction } from '../../config/transaction.js';
-import { PaginationQuerySchema, SortingQuerySchema } from '../../schemas/filter-query-schema.js';
-import { EmployeeQuerySchema, FilteringQuerySchema } from './employee-schema.js';
+import { PaginationQuerySchema } from '../../schemas/pagination-query-schema.js';
+import { EmployeeFilteringSchema, EmployeeSchema, EmployeeSortingSchema } from './employee-schema.js';
 
 export class EmployeeService {
 
@@ -21,7 +21,7 @@ export class EmployeeService {
   };
 
   createEmployee = async body => {
-    const employee = EmployeeQuerySchema.parse( body );
+    const employee = EmployeeSchema.parse( body );
     return withTransaction( async () => {
       return await this.employeeRepository.create( employee );
     } );
@@ -34,8 +34,8 @@ export class EmployeeService {
   };
 
   getEmployees = async query => {
-    const filters = FilteringQuerySchema.parse( query );
-    const sort = SortingQuerySchema.parse( query );
+    const filters = EmployeeFilteringSchema.parse( query );
+    const sort = EmployeeSortingSchema.parse( query );
     const pagination = PaginationQuerySchema.parse( query );
     return withTransaction( async () => {
       const employees = await this.employeeRepository.find( filters, sort, { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } );
@@ -56,7 +56,7 @@ export class EmployeeService {
   };
 
   updateEmployee = async ( id, body ) => {
-    const employee = EmployeeQuerySchema.pick( { name: true } ).parse( body );
+    const employee = EmployeeSchema.pick( { name: true } ).parse( body );
     return withTransaction( async () => {
       return await this.employeeRepository.update( id, employee );
     } );

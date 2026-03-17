@@ -26,7 +26,7 @@ export class AssetRepository {
     return result.recordset[0] || null;
   };
 
-  create = async ( { name, serialNumber, companyId, typeId } ) => {
+  create = async ( { name, serialNumber, companyId, typeId, archived } ) => {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'name', this.db.sql.NVarChar, name )
@@ -34,7 +34,7 @@ export class AssetRepository {
       .input( 'serialNumber', this.db.sql.NVarChar, serialNumber )
       .input( 'typeId', this.db.sql.Int, typeId )
       .input( 'companyId', this.db.sql.Int, companyId )
-      .input( 'archived', this.db.sql.Bit, false )
+      .input( 'archived', this.db.sql.Bit, archived )
       .query( 'INSERT INTO assets (name, slug, serialNumber, typeId, companyId, archived) OUTPUT inserted.* VALUES (@name, @slug, @serialNumber, @typeId, @companyId, @archived)' );
     return result.recordset[0] || null;
   };
@@ -74,16 +74,14 @@ export class AssetRepository {
       query += ' AND asset_employee.employeeId = @employeeId';
     }
 
-    if ( filters.archived ) {
+    if ( filters.archived === true ) {
       request.input( 'archived', this.db.sql.Bit, true );
-      query += ' AND assets.archived = @archived';
-    } else {
-      request.input( 'archived', this.db.sql.Bit, false );
       query += ' AND assets.archived = @archived';
     }
 
-    if ( filters.orphaned ) {
-      query += ' AND asset_employee.assetId IS NULL';
+    if ( filters.archived === false ) {
+      request.input( 'archived', this.db.sql.Bit, false );
+      query += ' AND assets.archived = @archived';
     }
 
     query += ` ORDER BY ${sort.sort} ${sort.order}`;

@@ -50,7 +50,16 @@ export class AssetTypeRepository {
     const executor = await this.db.getExecutor();
     const result = await executor.request()
       .input( 'companyId', this.db.sql.Int, companyId )
-      .query( 'INSERT INTO asset_types (name, slug, companyId) OUTPUT inserted.* VALUES (\'Laptop\', \'laptop\', @companyId), (\'Keyboard\', \'keyboard\', @companyId), (\'Mouse\', \'mouse\', @companyId)' );
+      .query( `INSERT INTO asset_types (name, slug, companyId) OUTPUT inserted.* VALUES
+          ('Camera', 'camera', @companyId),
+          ('Headset', 'headset', @companyId),
+          ('Keyboard', 'keyboard', @companyId),
+          ('Laptop', 'laptop', @companyId),
+          ('Mouse', 'mouse', @companyId),
+          ('Phone', 'phone', @companyId),
+          ('Printer', 'printer', @companyId),
+          ('Scanner', 'scanner', @companyId)
+        ` );
     return result.recordset;
   };
 

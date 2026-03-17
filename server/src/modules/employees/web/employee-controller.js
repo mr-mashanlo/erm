@@ -24,7 +24,7 @@ export class EmployeeWebController {
 
   createEmployee = async ( req, res, next ) => {
     try {
-      await this.employeeService.createEmployee( { ...req.body, companyId: req.user.company } );
+      await this.employeeService.createEmployee( { ...req.body, companyId: req.user.company, archived: false } );
       res.redirect( req.get( 'Referrer' ) || '/employees' );
     } catch ( error ) {
       next( error );
@@ -42,9 +42,8 @@ export class EmployeeWebController {
 
   showEmployees = async ( req, res, next ) => {
     try {
-      const archivedEmployees = await this.employeeService.getEmployees( { companyId: req.user.company, archived: true, limit: '100' } );
-      const employees = await this.employeeService.getEmployees( { ...req.query, archived: false } );
-      res.render( 'employees', { employees, archivedEmployees } );
+      const employees = await this.employeeService.getEmployees( { companyId: req.user.company, archived: false, ...req.query } );
+      res.render( 'employees', { employees } );
     } catch ( error ) {
       next( error );
     }
