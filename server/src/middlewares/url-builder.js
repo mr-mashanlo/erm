@@ -4,16 +4,15 @@ export const urlBuilder = ( req, res, next ) => {
   res.locals.buildUrl = params => {
     const currentParams = new URLSearchParams( req.query );
 
-    for ( const key in params ) {
-      const value = params[key];
+    Object.entries( params ).forEach( ( [ key, value ] ) => {
       if ( value ) {
         currentParams.set( key, value );
-        return '?' + currentParams.toString();
       } else {
         currentParams.delete( key );
-        return '?' + currentParams.toString();
       }
-    }
+    } );
+
+    return '?' + currentParams.toString();
   };
 
   next();
