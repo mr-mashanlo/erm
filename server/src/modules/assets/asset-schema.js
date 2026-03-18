@@ -31,7 +31,6 @@ export const AssetSortingSchema = z.object( {
 
 export const TypeSchema = z.object( {
   name: z.string(),
-  slug: z.string(),
   companyId: z.number()
 } );
 

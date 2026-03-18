@@ -32,7 +32,7 @@ export class AssetTypeService {
   };
 
   updateType = async ( id, body ) => {
-    const type = TypeSchema.parse( body );
+    const type = TypeSchema.pick( { name: true } ).parse( body );
     return withTransaction( async () => {
       return await this.assetTypeRepository.update( id, type );
     } );

@@ -27,7 +27,16 @@ export class AssetTypeRepository {
   find = async ( filters, sort, pagination ) => {
     const executor = await this.db.getExecutor();
     const request = await executor.request();
-    let query = 'SELECT * FROM asset_types WHERE 1=1';
+    let query = `
+      SELECT asset_types.*, (
+        SELECT assets.id
+        FROM assets
+        WHERE assets.typeId = asset_types.id
+        FOR JSON AUTO
+      ) as assets
+      FROM asset_types
+      WHERE 1 = 1
+    `;
 
     if ( filters.search ) {
       request.input( 'name', this.db.sql.NVarChar, `%${filters.search}%` );
@@ -43,7 +52,12 @@ export class AssetTypeRepository {
     query += ` OFFSET ${pagination.skip} ROWS FETCH NEXT ${pagination.limit} ROWS ONLY`;
 
     const result = await request.query( query );
-    return result.recordset;
+    return result.recordset.map( raw => ( {
+      id: raw.id,
+      name: raw.name,
+      slug: raw.slug,
+      assets: JSON.parse( raw.assets )
+    } ) );
   };
 
   seedDefaultAssets = async companyId => {
@@ -69,7 +83,7 @@ export class AssetTypeRepository {
       .input( 'id', this.db.sql.Int, id )
       .input( 'name', this.db.sql.NVarChar, name )
       .input( 'slug', this.db.sql.NVarChar, slug( name ) )
-      .query( 'UPDATE asset_types SET name = @name slug = @slug OUTPUT inserted.* WHERE id = @id' );
+      .query( 'UPDATE asset_types SET name = @name, slug = @slug OUTPUT inserted.* WHERE id = @id' );
     return result.recordset[0] || null;
   };
 

@@ -10,6 +10,7 @@ import { errorHandler } from './middlewares/error-handler.js';
 import { urlBuilder } from './middlewares/url-builder.js';
 import { assetApiRouter } from './modules/assets/api/asset-router.js';
 import { assetWebRouter } from './modules/assets/web/asset-router.js';
+import { typeWebRouter } from './modules/assets/web/type-router.js';
 import { employeeApiRouter } from './modules/employees/api/employee-router.js';
 import { employeeWebRouter } from './modules/employees/web/employee-router.js';
 import { homeWebRouter } from './modules/home/web/home-router.js';
@@ -38,6 +39,7 @@ app.use( '/', userWebRouter );
 
 app.use( '/api', assetApiRouter );
 app.use( '/', assetWebRouter );
+app.use( '/', typeWebRouter );
 
 app.use( '/api', employeeApiRouter );
 app.use( '/', employeeWebRouter );
