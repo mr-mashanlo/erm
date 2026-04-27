@@ -1,6 +1,5 @@
 import { withTransaction } from '../../config/transaction.js';
-import { PaginationQuerySchema } from '../../schemas/pagination-query-schema.js';
-import { AssetSortingSchema, TypeFilteringSchema, TypeSchema } from './asset-schema.js';
+import { AssetSortingSchema, PaginationQuerySchema, TypeFilteringSchema, TypeSchema } from './asset-schema.js';
 
 export class AssetTypeService {
 

@@ -52,26 +52,7 @@ export const TypeSortingSchema = z.object( {
   )
 } );
 
-// export const AssetQuerySchema = z.object( {
-//   name: z.string(),
-//   serialNumber: z.string(),
-//   typeId: z.xor( [ z.string(), z.number() ] ),
-//   companyId: z.xor( [ z.string(), z.number() ] )
-// } );
-
-// export const TypeQuerySchema = z.object( {
-//   name: z.string()
-// } );
-
-// export const FilteringQuerySchema = z.object( {
-//   search: z.preprocess( v => v || undefined, z.string().optional() ),
-//   employeeId: z.preprocess( v => v || undefined, z.xor( [ z.string(), z.number() ] ).optional() ),
-//   companyId: z.xor( [ z.string(), z.number() ] ),
-//   archived: z.boolean().optional(),
-//   orphaned : z.boolean().optional()
-// } );
-
-// export const FilteringTypeQuerySchema = z.object( {
-//   search: z.preprocess( v => v || undefined, z.string().optional() ),
-//   companyId: z.preprocess( v => v || undefined, z.xor( [ z.string(), z.number() ] ).optional() )
-// } );
+export const PaginationQuerySchema = z.object( {
+  limit: z.string().transform( v => Number( v ) < 1 ? 0 : Number( v ) ).default( 10 ).optional(),
+  page: z.string().transform( v => Number( v ) < 1 ? 1 : Number( v ) ).default( 1 ).optional()
+} );

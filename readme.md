@@ -14,27 +14,17 @@ Simple web application for managing company equipment assigned to employees. Bui
 
 ## Getting Started
 
-### Environment
-Create a .env file based on the provided .env.local template.
-```bash
-cp .env.local .env
-```
-
-### Database Setup
-Start the SQL Server container and apply the database schema.
-```bash
-docker compose up -d
-sqlcmd -S localhost -U sa -P <password> -i schema.sql
-```
-
 ### Start Application
 Use these commands to manage the application lifecycle.
 ```bash
+# Create a .env file
+cp .env.local .env
+
 # Start services
-docker compose up -d --build
+docker compose up -d
 
 # Stop services
-docker compose down
+docker compose down -v
 
 # Restart service
 docker compose restart <service>

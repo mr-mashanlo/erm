@@ -1,6 +1,5 @@
 import { withTransaction } from '../../config/transaction.js';
-import { PaginationQuerySchema } from '../../schemas/pagination-query-schema.js';
-import { EmployeeFilteringSchema, EmployeeSchema, EmployeeSortingSchema } from './employee-schema.js';
+import { EmployeeFilteringSchema, EmployeeSchema, EmployeeSortingSchema, PaginationQuerySchema } from './employee-schema.js';
 
 export class EmployeeService {
 
