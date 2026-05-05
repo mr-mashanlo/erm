@@ -31,4 +31,7 @@ docker compose restart <service>
 
 # Log service
 docker logs <service> -f
+
+# Run command in container
+docker exec -it <service> <command>
 ```

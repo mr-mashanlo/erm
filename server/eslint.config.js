@@ -7,7 +7,7 @@ import globals from 'globals';
 export default defineConfig( [
   {
     files: [ '**/*.{js,mjs,cjs}' ],
-    ignores: [ 'public/**/*.js' ],
+    ignores: [ './public/**/*.{js,mjs,cjs}', './generated/**/*.{js,mjs,cjs}' ],
     extends: [ 'js/recommended' ],
     languageOptions: { globals: globals.node },
     plugins: { js, '@simple-sort': simpleImportSort, '@stylistic': stylistic },
