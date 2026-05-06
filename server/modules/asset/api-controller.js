@@ -1,4 +1,4 @@
-export class AssetController {
+export class AssetApiController {
 
   constructor( assetService ) {
     this.assetService = assetService;
@@ -24,7 +24,7 @@ export class AssetController {
 
   getAssets = async ( req, res, next ) => {
     try {
-      const document = await this.assetService.getAssets();
+      const document = await this.assetService.getAssets( req.query );
       res.json( document );
     } catch ( error ) {
       next( error );

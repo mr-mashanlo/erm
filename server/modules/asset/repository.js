@@ -4,6 +4,10 @@ export class AssetRepository {
     this.prisma = prisma;
   };
 
+  count = async where => {
+    return await this.prisma.asset.count( { where } );
+  };
+
   create = async data => {
     return await this.prisma.asset.create( { data } );
   };
@@ -12,8 +16,13 @@ export class AssetRepository {
     return await this.prisma.asset.delete( { where } );
   };
 
-  find = async () => {
-    return await this.prisma.asset.findMany();
+  find = async ( { filters, sort, pagination } ) => {
+    return await this.prisma.asset.findMany( {
+      where: filters,
+      orderBy: sort,
+      take: pagination.limit,
+      skip: pagination.skip
+    } );
   };
 
   findById = async id => {
