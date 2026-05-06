@@ -1,10 +1,10 @@
-export class UserController {
+export class UserApiController {
 
   constructor( userService ) {
     this.userService = userService;
   };
 
-  signin = async ( req, res, next ) => {
+  signIn = async ( req, res, next ) => {
     try {
       const { id, accessToken, refreshToken } = await this.userService.signin( req.body );
       res.cookie( 'accessToken', accessToken, { maxAge: process.env.COOKIE_ACCESS_TIME, httpOnly: true, sameSite: 'none', secure: true } );
@@ -15,7 +15,7 @@ export class UserController {
     }
   };
 
-  signup = async ( req, res, next ) => {
+  signUp = async ( req, res, next ) => {
     try {
       const { id, accessToken, refreshToken } = await this.userService.signup( req.body );
       res.cookie( 'accessToken', accessToken, { maxAge: process.env.COOKIE_ACCESS_TIME, httpOnly: true, sameSite: 'none', secure: true } );

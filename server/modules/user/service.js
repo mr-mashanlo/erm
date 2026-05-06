@@ -11,18 +11,18 @@ export class UserService {
 
   refreshToken = async refreshToken => {
     const hashedRefreshToken = this.tokenService.hashRefreshToken( refreshToken );
-    const user = await this.userRepository.findByRefreshToken( hashedRefreshToken );
+    const user = await this.userRepository.findByToken( hashedRefreshToken );
 
     if ( !user ) throw new Unauthorized( [ { name: 'token', message: 'Invalid or reused token' } ] );
-    if ( +user.expiredAt < Date.now() ) throw new Unauthorized( [ { name: 'token', message: 'Token has expired' } ] );
+    if ( Number( user.expiredAt ) < Date.now() ) throw new Unauthorized( [ { name: 'token', message: 'Token has expired' } ] );
 
     const newAccessToken = this.tokenService.generateAccessToken( { id: user.id, email: user.email, role: user.role } );
     const newRefreshToken = this.tokenService.generateRefreshToken();
     const newHashedRefreshToken = this.tokenService.hashRefreshToken( newRefreshToken );
-    const updatedUser = await this.userRepository.updateRefreshToken( { id: user.id, refreshToken: hashedRefreshToken }, { refreshToken: newHashedRefreshToken, expiredAt: Date.now() + +process.env.COOKIE_REFRESH_TIME } );
+    const updatedUser = await this.userRepository.update( { id: user.id, refreshToken: hashedRefreshToken }, { refreshToken: newHashedRefreshToken, expiredAt: Date.now() + +process.env.COOKIE_REFRESH_TIME } );
 
     if ( !updatedUser ) throw new Unauthorized( [ { message: 'Token already rotated' } ] );
-    return { id: user.id, email: user.email, accessToken: newAccessToken, refreshToken: newRefreshToken };
+    return { id: user.id, email: user.email, role: user.role, accessToken: newAccessToken, refreshToken: newRefreshToken };
   };
 
   signin = async ( { email, password } ) => {
