@@ -4,6 +4,10 @@ export class TypeRepository {
     this.prisma = prisma;
   };
 
+  count = async where => {
+    return await this.prisma.company.count( { where } );
+  };
+
   create = async data => {
     return await this.prisma.type.create( { data } );
   };

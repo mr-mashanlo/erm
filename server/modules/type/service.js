@@ -1,21 +1,28 @@
 import slug from 'slug';
 
+import { FilteringSchema, PaginationSchema, SortingSchema } from './schema.js';
+
 export class TypeService {
 
   constructor( typeRepository ) {
     this.typeRepository = typeRepository;
   };
 
-  createType = async ( { name } ) => {
-    return await this.typeRepository.create( { name, slug: slug( name ) } );
+  createType = async body => {
+    return await this.typeRepository.create( { ...body, slug: slug( body.name ) } );
   };
 
   deleteType = async id => {
     await this.typeRepository.delete( { id } );
   };
 
-  getTypes = async () => {
-    return await this.typeRepository.find();
+  getTypes = async query => {
+    const filters = FilteringSchema.parse( query );
+    const sort = SortingSchema.parse( query );
+    const pagination = PaginationSchema.parse( query );
+    const data = await this.typeRepository.find( { filters, sort: { [sort.sort]: sort.order }, pagination: { ...pagination, skip: ( pagination.page - 1 ) * pagination.limit } } );
+    const total = await this.typeRepository.count( filters );
+    return { data, total, ...pagination };
   };
 
   getTypeById = async id => {

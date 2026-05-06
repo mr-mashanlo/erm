@@ -1,4 +1,4 @@
-export class TypeController {
+export class TypeApiController {
 
   constructor( typeService ) {
     this.typeService = typeService;
@@ -24,7 +24,7 @@ export class TypeController {
 
   getTypes = async ( req, res, next ) => {
     try {
-      const document = await this.typeService.getTypes();
+      const document = await this.typeService.getTypes( req.query );
       res.json( document );
     } catch ( error ) {
       next( error );
