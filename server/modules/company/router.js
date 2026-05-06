@@ -2,14 +2,17 @@ import { Router } from 'express';
 
 import { checkRoles } from '../../middlewares/check-roles.js';
 import { isAuth } from '../../middlewares/is-auth.js';
-import { companyController } from './index.js';
+import { companyApiController, companyWebController } from './index.js';
 
 const router = Router();
 
-router.post( '/companies', isAuth, checkRoles( [ 'ADMIN' ] ), companyController.createCompany );
-router.delete( '/companies/:id', isAuth, checkRoles( [ 'ADMIN' ] ), companyController.deleteCompany );
-router.get( '/companies', isAuth, checkRoles( [ 'ADMIN' ] ), companyController.getCompanies );
-router.get( '/companies/:id', isAuth, checkRoles( [ 'ADMIN' ] ), companyController.getCompanyById );
-router.put( '/companies/:id', isAuth, checkRoles( [ 'ADMIN' ] ), companyController.updateCompany );
+router.post( '/api/companies', isAuth, checkRoles( [ 'ADMIN' ] ), companyApiController.createCompany );
+router.delete( '/api/companies/:id', isAuth, checkRoles( [ 'ADMIN' ] ), companyApiController.deleteCompany );
+router.get( '/api/companies', isAuth, checkRoles( [ 'ADMIN' ] ), companyApiController.getCompanies );
+router.get( '/api/companies/:id', isAuth, checkRoles( [ 'ADMIN' ] ), companyApiController.getCompanyById );
+router.put( '/api/companies/:id', isAuth, checkRoles( [ 'ADMIN' ] ), companyApiController.updateCompany );
+
+router.post( '/companies', isAuth, checkRoles( [ 'ADMIN' ] ), companyWebController.createCompany );
+router.get( '/companies', isAuth, checkRoles( [ 'ADMIN' ] ), companyWebController.showCompaniesPage );
 
 export { router as companyRouter };

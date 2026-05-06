@@ -1,4 +1,4 @@
-export class CompanyController {
+export class CompanyApiController {
 
   constructor( companyService ) {
     this.companyService = companyService;
@@ -6,7 +6,7 @@ export class CompanyController {
 
   createCompany = async ( req, res, next ) => {
     try {
-      const document = await this.companyService.createCompany( req.body );
+      const document = await this.companyService.createCompany( { ...req.body, userId: req.user.id } );
       res.json( document );
     } catch ( error ) {
       next( error );
@@ -24,7 +24,7 @@ export class CompanyController {
 
   getCompanies = async ( req, res, next ) => {
     try {
-      const document = await this.companyService.getCompanies();
+      const document = await this.companyService.getCompanies( req.query );
       res.json( document );
     } catch ( error ) {
       next( error );

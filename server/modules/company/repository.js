@@ -4,6 +4,10 @@ export class CompanyRepository {
     this.prisma = prisma;
   };
 
+  count = async where => {
+    return await this.prisma.company.count( { where } );
+  };
+
   create = async data => {
     return await this.prisma.company.create( { data } );
   };
@@ -12,8 +16,13 @@ export class CompanyRepository {
     return await this.prisma.company.delete( { where } );
   };
 
-  find = async () => {
-    return await this.prisma.company.findMany();
+  find = async ( { filters, sort, pagination } ) => {
+    return await this.prisma.company.findMany( {
+      where: filters,
+      orderBy: sort,
+      take: pagination.limit,
+      skip: pagination.skip
+    } );
   };
 
   findById = async id => {
