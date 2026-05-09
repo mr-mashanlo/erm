@@ -40,6 +40,15 @@ export class CompanyApiController {
     }
   };
 
+  getCompanyBySlug = async ( req, res, next ) => {
+    try {
+      const document = await this.companyService.getCompanyBySlug( { slug: req.params.slug, userId: req.user.id } );
+      res.json( document );
+    } catch ( error ) {
+      next( error );
+    }
+  };
+
   updateCompany = async ( req, res, next ) => {
     try {
       const document = await this.companyService.updateCompany( req.params.id, req.body );

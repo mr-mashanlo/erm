@@ -7,8 +7,15 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { errorHandler } from './middlewares/error-handler.js';
-import { companyRouter } from './modules/company/router.js';
-import { userRouter } from './modules/user/router.js';
+import { urlBuilder } from './middlewares/url-builder.js';
+import { assetApiRouter } from './modules/asset/api/router.js';
+import { assetWebRouter } from './modules/asset/web/router.js';
+import { companyApiRouter } from './modules/company/api/router.js';
+import { companyWebRouter } from './modules/company/web/router.js';
+import { typeApiRouter } from './modules/type/api/router.js';
+import { typeWebRouter } from './modules/type/web/router.js';
+import { userApiRouter } from './modules/user/api/router.js';
+import { userWebRouter } from './modules/user/web/router.js';
 
 const app = express();
 const __filename = fileURLToPath( import.meta.url );
@@ -24,8 +31,21 @@ app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.set( 'views', path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'ejs' );
 
-app.use( '/', userRouter );
-app.use( '/', companyRouter );
+app.use( urlBuilder );
+
+app.use( '/api', userApiRouter );
+app.use( '/', userWebRouter );
+
+app.use( '/api', companyApiRouter );
+app.use( '/', companyWebRouter );
+
+app.use( '/api', typeApiRouter );
+app.use( '/', typeWebRouter );
+
+app.use( '/api', assetApiRouter );
+app.use( '/', assetWebRouter );
+
+app.use( '/', ( req, res ) => res.redirect( '/companies' ) );
 
 app.use( errorHandler );
 

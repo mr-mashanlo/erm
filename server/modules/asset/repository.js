@@ -25,6 +25,10 @@ export class AssetRepository {
     } );
   };
 
+  findOne = async where => {
+    return await this.prisma.company.findFirst( { where } );
+  };
+
   findById = async id => {
     return await this.prisma.asset.findUnique( { where: { id } } );
   };

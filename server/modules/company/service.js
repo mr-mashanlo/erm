@@ -1,4 +1,4 @@
-import slug from 'slug';
+import generateSlug from 'slug';
 
 import { FilteringSchema, PaginationSchema, SortingSchema } from './schema.js';
 
@@ -9,14 +9,14 @@ export class CompanyService {
   };
 
   createCompany = async body => {
-    return await this.companyRepository.create( { ...body, slug: slug( body.name ) } );
+    return await this.companyRepository.create( { ...body, slug: generateSlug( body.name ) } );
   };
 
-  deleteCompany = async id => {
-    await this.companyRepository.delete( { id } );
+  deleteCompany = async query => {
+    await this.companyRepository.delete( query );
   };
 
-  getCompanies = async query => {
+  getCompanies = async ( query = {} ) => {
     const filters = FilteringSchema.parse( query );
     const sort = SortingSchema.parse( query );
     const pagination = PaginationSchema.parse( query );
@@ -25,12 +25,16 @@ export class CompanyService {
     return { data, total, ...pagination };
   };
 
+  getCompany = async query => {
+    return await this.companyRepository.findOne( query );
+  };
+
   getCompanyById = async id => {
-    return await this.companyRepository.findById( { id } );
+    return await this.companyRepository.findById( id );
   };
 
   updateCompany = async ( id, body ) => {
-    return await this.companyRepository.update( { id }, body );
+    return await this.companyRepository.update( { id }, { ...body, slug: generateSlug( body.name ) } );
   };
 
 };

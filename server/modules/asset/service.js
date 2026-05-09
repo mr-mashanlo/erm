@@ -1,4 +1,4 @@
-import slug from 'slug';
+import generateSlug from 'slug';
 
 import { FilteringSchema, PaginationSchema, SortingSchema } from './schema.js';
 
@@ -8,15 +8,15 @@ export class AssetService {
     this.assetRepository = assetRepository;
   };
 
-  createAsset = async ( { name } ) => {
-    return await this.assetRepository.create( { name, slug: slug( name ) } );
+  createAsset = async body => {
+    return await this.assetRepository.create( { ...body, slug: generateSlug( body.name ) } );
   };
 
-  deleteAsset = async id => {
-    await this.assetRepository.delete( { id } );
+  deleteAsset = async query => {
+    await this.assetRepository.delete( query );
   };
 
-  getAssets = async query => {
+  getAssets = async ( query = {} ) => {
     const filters = FilteringSchema.parse( query );
     const sort = SortingSchema.parse( query );
     const pagination = PaginationSchema.parse( query );
@@ -25,12 +25,16 @@ export class AssetService {
     return { data, total, ...pagination };
   };
 
+  getCompany = async query => {
+    return await this.companyRepository.findOne( query );
+  };
+
   getAssetById = async id => {
-    return await this.assetRepository.findById( { id } );
+    return await this.assetRepository.findById( id );
   };
 
   updateAsset = async ( id, body ) => {
-    return await this.assetRepository.update( { id }, body );
+    return await this.assetRepository.update( { id }, { ...body, slug: generateSlug( body.name ) } );
   };
 
 };

@@ -11,7 +11,7 @@ export const FilteringSchema = z.object( {
 export const SortingSchema = z.object( {
   order: z.preprocess(
     v => [ 'asc', 'desc' ].includes( v ) ? v : undefined,
-    z.enum( [ 'asc', 'desc' ] ).default( 'asc' ).optional()
+    z.enum( [ 'asc', 'desc' ] ).default( 'desc' ).optional()
   ),
   sort: z.preprocess(
     v => [ 'id', 'name' ].includes( v ) ? v : undefined,

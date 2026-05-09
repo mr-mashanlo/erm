@@ -1,17 +1,21 @@
 import { z } from 'zod';
 
 export const AssetSchema = z.object( {
-  name: z.string()
+  name: z.string(),
+  companyId: z.string(),
+  typeId: z.string()
 } );
 
 export const FilteringSchema = z.object( {
-  name: z.string().optional()
+  name: z.string().optional(),
+  companyId: z.string().optional(),
+  typeId: z.string().optional()
 } );
 
 export const SortingSchema = z.object( {
   order: z.preprocess(
     v => [ 'asc', 'desc' ].includes( v ) ? v : undefined,
-    z.enum( [ 'asc', 'desc' ] ).default( 'asc' ).optional()
+    z.enum( [ 'asc', 'desc' ] ).default( 'desc' ).optional()
   ),
   sort: z.preprocess(
     v => [ 'id', 'name' ].includes( v ) ? v : undefined,

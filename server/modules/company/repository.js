@@ -25,6 +25,10 @@ export class CompanyRepository {
     } );
   };
 
+  findOne = async where => {
+    return await this.prisma.company.findFirst( { where } );
+  };
+
   findById = async id => {
     return await this.prisma.company.findUnique( { where: { id } } );
   };

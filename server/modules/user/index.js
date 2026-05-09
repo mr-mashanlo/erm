@@ -1,10 +1,10 @@
 import { prisma } from '../../config/db.js';
-import { UserApiController } from './api-controller.js';
-import { PasswordService } from './password-service.js';
+import { UserApiController } from './api/controller.js';
+import { PasswordService } from './libs/password-service.js';
+import { TokenService } from './libs/token-service.js';
 import { UserRepository } from './repository.js';
 import { UserService } from './service.js';
-import { TokenService } from './token-service.js';
-import { UserWebController } from './web-controller.js';
+import { UserWebController } from './web/controller.js';
 
 const passwordService = new PasswordService();
 export const tokenService = new TokenService();

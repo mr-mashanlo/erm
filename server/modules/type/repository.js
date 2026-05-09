@@ -5,7 +5,7 @@ export class TypeRepository {
   };
 
   count = async where => {
-    return await this.prisma.company.count( { where } );
+    return await this.prisma.type.count( { where } );
   };
 
   create = async data => {
@@ -16,8 +16,17 @@ export class TypeRepository {
     return await this.prisma.type.delete( { where } );
   };
 
-  find = async () => {
-    return await this.prisma.type.findMany();
+  find = async ( { filters, sort, pagination } ) => {
+    return await this.prisma.type.findMany( {
+      where: filters,
+      orderBy: sort,
+      take: pagination.limit,
+      skip: pagination.skip
+    } );
+  };
+
+  findOne = async where => {
+    return await this.prisma.type.findFirst( { where } );
   };
 
   findById = async id => {
