@@ -38,10 +38,6 @@
   <body class="text-xs text-zinc-700 bg-zinc-50">
     <%- include( '../shared/header' ); %>
     <main>
-      <section class="mx-4 my-8 sm:mx-10 sm:my-20">
-        <h1 class="mb-3 text-xl sm:text-2xl font-semibold">Companies</h1>
-        <p class="max-w-2xl leading-[200%]">At tempore commodi quibusdam sed ea veritatis temporibus accusantium qui corporis obcaecati aperiam, eveniet, quisquam recusandae magni ducimus error possimus.</p>
-      </section>
       <section class="m-4 sm:m-10">
         <div class="border border-zinc-200 rounded-md">
           <div class="border-b border-zinc-200">
@@ -53,7 +49,7 @@
                   </svg>
                 </button>
                 <dialog id="create_modal" class="modal">
-                  <div class="modal-box min-w-3xl py-35 bg-zinc-50">
+                  <div class="modal-box sm:min-w-4xl py-20 sm:px-20 sm:py-35 bg-zinc-50">
                     <h3 class="mb-5 text-xl text-center font-bold">Create company</h3>
                     <%- include( 'create-form' ); %>
                   </div>

@@ -1,9 +1,7 @@
 export class CompanyWebController {
 
-  constructor( companyService, typeService, assetService ) {
+  constructor( companyService ) {
     this.companyService = companyService;
-    this.typeService = typeService;
-    this.assetService = assetService;
   };
 
   createCompany = async ( req, res, next ) => {
@@ -45,9 +43,7 @@ export class CompanyWebController {
   showCompanyPage = async ( req, res, next ) => {
     try {
       const company = await this.companyService.getCompanyById( req.params.id );
-      const types = await this.typeService.getTypes( { companyId: company.id } );
-      const assets = await this.assetService.getAssets( { companyId: company.id } );
-      res.render( 'company/company', { data: { company, types, assets } } );
+      res.render( 'company/company', { data: { company } } );
     } catch ( error ) {
       next( error );
     }
