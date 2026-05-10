@@ -1,34 +1,61 @@
 services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
-      MSSQL_PID: "Developer"
-    ports:
-      - "1433:1433"
-    volumes:
-      - mssql_data:/var/opt/mssql
 
-  app:
+  db:
+    image: postgres:15
+    hostname: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - prisma-network
+    volumes:
+      - postgres:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  server:
     build:
       context: ./server
       dockerfile: dockerfile
     container_name: node
-    environment:
-      DB_HOST: "${DB_HOST}"
-      DB_USER: "${DB_USER}"
-      DB_PASSWORD: "${DB_PASSWORD}"
-      DB_NAME: "${DB_NAME}"
     ports:
-      - "3000:3000"
+      - "4173:4173"
+    networks:
+      - prisma-network
     volumes:
       - ./server:/usr/src/app
-      - /usr/src/app/node_modules
     depends_on:
-      - db
-    restart: on-failure
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  studio:
+    image: node:latest
+    container_name: studio
+    working_dir: /usr/src/app
+    volumes:
+      - ./server:/usr/src/app
+    command: npx prisma studio --port 5555 --browser none
+    ports:
+      - "5555:5555"
+    networks:
+      - prisma-network
+    depends_on:
+      db:
+        condition: service_healthy
+      server:
+        condition: service_started
+
+networks:
+  prisma-network:
 
 volumes:
-  mssql_data:
+  postgres:

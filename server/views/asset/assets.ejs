@@ -1,0 +1,149 @@
+<%
+  const page = data.assets.page;
+  const total = data.assets.total || 1;
+  const limit = data.assets.limit;
+
+  const paginationItems = 3;
+  const paginationTotal = Math.ceil( total / limit );
+  const coefficient = Math.ceil( page / paginationItems );
+  const start = coefficient * paginationItems - paginationItems;
+  const end = coefficient * paginationItems;
+%>
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <title>Assets</title>
+    <meta name="title" content="Companies">
+    <meta name="description" content="">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
+    <meta name="twitter:image" content="">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/images/favicon.svg" sizes="32x32">
+    <link rel="apple-touch-icon" href="/images/favicon.svg">
+    <link rel="stylesheet" href="/sources/main.css">
+    <script src="/sources/main.js" defer></script>
+  </head>
+
+  <body class="text-xs text-zinc-700 bg-zinc-50">
+    <%- include( '../shared/header' ); %>
+    <main>
+      <section class="m-4 sm:m-10">
+        <div class="border border-zinc-200 rounded-md">
+          <div class="border-b border-zinc-200">
+            <div class="flex items-center">
+              <div class="p-3">
+                <button onclick="create_modal.showModal()" class="w-7.5 h-7.5 shrink-0 flex items-center justify-center text-center bg-zinc-100 rounded-md cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                    <path d="M5 12h14"/><path d="M12 5v14"/>
+                  </svg>
+                </button>
+                <dialog id="create_modal" class="modal">
+                  <div class="modal-box sm:min-w-4xl py-20 sm:px-20 sm:py-35 bg-zinc-50">
+                    <h3 class="mb-5 text-xl text-center font-bold">Create asset</h3>
+                    <%- include( 'create-form', { body: { employees: data.employees.data, types: data.types.data, companies: data.companies.data } } ); %>
+                  </div>
+                  <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                  </form>
+                </dialog>
+              </div>
+              <div class="p-3">
+                <h2 class="font-bold">Assets</h2>
+              </div>
+            </div>
+          </div>
+          <div class="overflow-auto">
+            <table class="w-full min-w-200 text-left table-fixed">
+              <thead>
+                <tr>
+                  <th class="w-13.5 h-13.5"></th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'name', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Name</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'code', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Code</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'employee', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Employee</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'type', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Type</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'company', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Company</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <% data.assets.data.forEach( asset => { %>
+                  <tr class="border-t border-zinc-200">
+                    <td class="w-13.5 h-13.5 p-3"></td>
+                    <td class="p-3"><a href="/assetss/<%= asset.id %>" class="hover:underline"><%= asset.name %></a></td>
+                    <td class="p-3"><%= asset.code %></td>
+                    <td class="p-3"><a href="/assetss?employeeId=<%= asset.assetAssign[0].id %>" class="hover:underline"><%= asset.assetAssign[0].employee.name %></a></td>
+                    <td class="p-3"><a href="/assetss?typeId=<%= asset.typeId %>" class="hover:underline"><%= asset.type.name %></a></td>
+                    <td class="p-3"><a href="/assetss?companyId=<%= asset.companyId %>" class="hover:underline"><%= asset.company.name %></a></td>
+                  </tr>
+                <% } ) %>
+              </tbody>
+            </table>
+          </div>
+          <div class="border-t border-zinc-200">
+            <div class="flex items-center justify-between gap-3">
+              <div class="p-3 flex items-center gap-3">
+                <% Array.from( { length: paginationTotal }, ( _, i ) => i + 1 ).slice( start, end ).forEach( ( v ) => { %>
+                  <a href="<%= buildParams( { page: v } ) %>" class="w-7.5 h-7.5 shrink-0 flex items-center justify-center text-center bg-zinc-100 rounded-md cursor-pointer"><%= v %></a>
+                <% } ); %>
+              </div>
+              <div class="p-3 flex items-center gap-3">
+                <% if ( page > 1 ) { %>
+                  <a href="<%= buildParams( { page: page - 1 } ) %>" class="px-3 py-1.5 bg-zinc-100 rounded-md cursor-pointer">Prev</a>
+                <% } %>
+                <% if ( page < paginationTotal ) { %>
+                  <a href="<%= buildParams( { page: page + 1 } ) %>" class="px-3 py-1.5 bg-zinc-100 rounded-md cursor-pointer">Next</a>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+
+</html>

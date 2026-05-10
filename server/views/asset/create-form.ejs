@@ -1,0 +1,57 @@
+<form method="post" class="w-full sm:w-166 mx-auto">
+  <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 relative">
+    <div class="relative">
+      <label for="name" class="sr-only">Name</label>
+      <input id="name" name="name" type="text" placeholder="Thinkpad X1 Carbon" class="peer w-full p-4 pl-11 rounded-xl bg-zinc-100 placeholder:text-zinc-300" required />
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 left-4.5 -translate-y-1/2 stroke-zinc-300 peer-focus-visible:stroke-zinc-700">
+        <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+      </svg>
+    </div>
+    <div class="relative">
+      <label for="code" class="sr-only">Code</label>
+      <input id="code" name="code" type="text" placeholder="SN00000" class="peer w-full p-4 pl-11 rounded-xl bg-zinc-100 placeholder:text-zinc-300" required />
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 left-4.5 -translate-y-1/2 stroke-zinc-300 peer-focus-visible:stroke-zinc-700">
+        <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+      </svg>
+    </div>
+    <div class="relative">
+      <label for="name" class="sr-only">Type</label>
+      <select id="typeId" name="typeId" placeholder="Laptops" class="peer w-full p-4 pl-11 rounded-xl bg-zinc-100 placeholder:text-zinc-300" required>
+        <% body.types.forEach( type => { %>
+          <option value="<%= type.id %>"><%= type.name %></option>
+        <% } ) %>
+      </select>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 left-4.5 -translate-y-1/2 stroke-zinc-300 peer-focus-visible:stroke-zinc-700">
+        <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+      </svg>
+    </div>
+    <div class="relative">
+      <label for="name" class="sr-only">Company</label>
+      <select id="companyId" name="companyId" placeholder="Company" class="peer w-full p-4 pl-11 rounded-xl bg-zinc-100 placeholder:text-zinc-300" required>
+        <% body.companies.forEach( company => { %>
+          <option value="<%= company.id %>"><%= company.name %></option>
+        <% } ) %>
+      </select>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 left-4.5 -translate-y-1/2 stroke-zinc-300 peer-focus-visible:stroke-zinc-700">
+        <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+      </svg>
+    </div>
+    <div class="relative">
+      <label for="name" class="sr-only">Employee</label>
+      <select id="employeeId" name="employeeId" placeholder="Employee" class="peer w-full p-4 pl-11 rounded-xl bg-zinc-100 placeholder:text-zinc-300" required>
+        <% body.employees.forEach( employee => { %>
+          <option value="<%= employee.id %>"><%= employee.name %></option>
+        <% } ) %>
+      </select>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 absolute top-1/2 left-4.5 -translate-y-1/2 stroke-zinc-300 peer-focus-visible:stroke-zinc-700">
+        <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+      </svg>
+    </div>
+    <div>
+      <button type="submit" class="w-full p-4 rounded-xl bg-black text-white cursor-pointer outline-offset-3 disabled:cursor-default disabled:opacity-70">Submit</button>
+    </div>
+  </div>
+  <div class="mt-5 text-center">
+    <p>Lorem ipsum dolor sit amet consectetur</p>
+  </div>
+</form>

@@ -1,0 +1,16 @@
+<header class="m-4 sm:m-10">
+  <h1 class="flex items-center gap-4 text-md sm:text-xl font-bold">
+    <a href="/" class="block w-10 h-10 bg-zinc-300 rounded-full flex items-center justify-center">
+      <svg viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4">
+        <path d="M9.61785 5.98595L11.5315 0.919794C11.7953 0.221241 10.8738 -0.322357 10.3482 0.221771L3.19002 7.63153C2.84466 7.98901 2.98974 8.57015 3.46604 8.73719L7.31537 10.0872C7.68274 10.2161 7.87215 10.6075 7.73845 10.9615L5.805 16.0801C5.53629 16.7914 6.49075 17.3321 7.00518 16.76L13.8268 9.17283C14.1517 8.81153 14.0001 8.24875 13.534 8.08525L10.0409 6.86016C9.67356 6.73135 9.48413 6.33994 9.61785 5.98595Z" fill="black"/>
+      </svg>
+    </a>
+    <span><%= currentUser.email %></span>
+  </h1>
+  <ul class="mt-4 sm:mt-10 flex items-center gap-6 sm:gap-12">
+    <li><a href="/assetss" class="hover:underline">Assets</a></li>
+    <li><a href="/employees" class="hover:underline">Employees</a></li>
+    <li><a href="/types" class="hover:underline">Types</a></li>
+    <li><a href="/companies" class="hover:underline">Companies</a></li>
+  </ul>
+</header>

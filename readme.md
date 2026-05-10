@@ -31,4 +31,16 @@ docker compose restart <service>
 
 # Log service
 docker logs <service> -f
+
+# Run command in container
+docker exec -it <service> <command>
+```
+
+### Usefull commands
+```bash
+# Apply migration
+docker exec -it node npx prisma migrate dev --name <message>
+
+# Restart server
+docker compose restart server
 ```
