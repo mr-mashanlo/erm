@@ -1,13 +1,11 @@
 import { z } from 'zod';
 
 export const TypeSchema = z.object( {
-  name: z.string(),
-  companyId: z.string()
+  name: z.string()
 } );
 
 export const FilteringSchema = z.object( {
-  name: z.string().optional(),
-  companyId: z.string().optional()
+  name: z.string().optional()
 } );
 
 export const SortingSchema = z.object( {

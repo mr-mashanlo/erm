@@ -8,8 +8,8 @@ import { TypeSchema } from '../schema.js';
 
 const typeWebRouter = Router( { mergeParams: true } );
 
-typeWebRouter.get( '/companies/:company/types', isAuth, typeWebController.showTypesPage );
-typeWebRouter.post( '/companies/:company/types', isAuth, checkRoles( [ 'ADMIN' ] ), validate( TypeSchema ), typeWebController.createType );
+typeWebRouter.get( '/types', isAuth, typeWebController.showTypesPage );
+typeWebRouter.post( '/types', isAuth, checkRoles( [ 'ADMIN' ] ), validate( TypeSchema ), typeWebController.createType );
 
 typeWebRouter.get( '/types/:id', isAuth, typeWebController.showTypePage );
 typeWebRouter.post( '/types/:id', isAuth, checkRoles( [ 'ADMIN' ] ), typeWebController.updateType );

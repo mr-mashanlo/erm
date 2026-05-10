@@ -1,14 +1,13 @@
 export class TypeWebController {
 
-  constructor( typeService, assetService ) {
+  constructor( typeService ) {
     this.typeService = typeService;
-    this.assetService = assetService;
   };
 
   createType = async ( req, res, next ) => {
     try {
-      await this.typeService.createType( { ...req.body, companyId: req.params.company } );
-      res.redirect( req.query.from ? req.query.from : req.path );
+      await this.typeService.createType( { ...req.body, userId: req.user.id } );
+      res.redirect( req.path );
     } catch ( error ) {
       next( error );
     }
@@ -17,7 +16,7 @@ export class TypeWebController {
   deleteType = async ( req, res, next ) => {
     try {
       await this.typeService.deleteType( { id: req.params.id } );
-      res.redirect( '/companies' );
+      res.redirect( '/types' );
     } catch ( error ) {
       next( error );
     }
@@ -44,8 +43,7 @@ export class TypeWebController {
   showTypePage = async ( req, res, next ) => {
     try {
       const type = await this.typeService.getTypeById( req.params.id );
-      const assets = await this.assetService.getAssets( { typeId: type.id } );
-      res.render( 'type/type', { data: { type, assets } } );
+      res.render( 'type/type', { data: { type } } );
     } catch ( error ) {
       next( error );
     }
