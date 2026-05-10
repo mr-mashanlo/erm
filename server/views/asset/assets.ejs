@@ -32,16 +32,12 @@
     <link rel="icon" href="/images/favicon.svg" sizes="32x32">
     <link rel="apple-touch-icon" href="/images/favicon.svg">
     <link rel="stylesheet" href="/sources/main.css">
-    <script src="/assets/main.js" defer></script>
+    <script src="/sources/main.js" defer></script>
   </head>
 
   <body class="text-xs text-zinc-700 bg-zinc-50">
     <%- include( '../shared/header' ); %>
     <main>
-      <section class="mx-4 my-8 sm:mx-10 sm:my-20">
-        <h1 class="mb-3 text-xl sm:text-2xl font-semibold">Assets</h1>
-        <p class="max-w-2xl leading-[200%]">At tempore commodi quibusdam sed ea veritatis temporibus accusantium qui corporis obcaecati aperiam, eveniet, quisquam recusandae magni ducimus error possimus.</p>
-      </section>
       <section class="m-4 sm:m-10">
         <div class="border border-zinc-200 rounded-md">
           <div class="border-b border-zinc-200">
@@ -53,9 +49,9 @@
                   </svg>
                 </button>
                 <dialog id="create_modal" class="modal">
-                  <div class="modal-box min-w-3xl py-35 bg-zinc-50">
+                  <div class="modal-box sm:min-w-4xl py-20 sm:px-20 sm:py-35 bg-zinc-50">
                     <h3 class="mb-5 text-xl text-center font-bold">Create asset</h3>
-                    <%- // include( 'create-form', { action: '', body: { types: data.types.data } } ); %>
+                    <%- include( 'create-form', { body: { types: data.types.data, companies: data.companies.data } } ); %>
                   </div>
                   <form method="dialog" class="modal-backdrop">
                     <button>close</button>
@@ -80,13 +76,40 @@
                       </svg>
                     </a>
                   </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'code', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Code</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'type', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Type</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
+                  <th class="p-3">
+                    <a href="<%= buildParams( { sort: 'company', order: query.order === 'asc' ? 'desc' : 'asc' } ) %>" class="inline-flex items-center gap-1 cursor-pointer">
+                      <span>Company</span>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                        <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                      </svg>
+                    </a>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <% data.assets.data.forEach( asset => { %>
                   <tr class="border-t border-zinc-200">
                     <td class="w-13.5 h-13.5 p-3"></td>
-                    <td class="p-3"><a href="/assets/<%= asset.id %>" class="hover:underline"><%= asset.name %></a></td>
+                    <td class="p-3"><a href="/assetss/<%= asset.id %>" class="hover:underline"><%= asset.name %></a></td>
+                    <td class="p-3"><%= asset.code %></td>
+                    <td class="p-3"><a href="/assetss?typeId=<%= asset.typeId %>" class="hover:underline"><%= asset.type.name %></a></td>
+                    <td class="p-3"><a href="/assetss?companyId=<%= asset.companyId %>" class="hover:underline"><%= asset.company.name %></a></td>
                   </tr>
                 <% } ) %>
               </tbody>

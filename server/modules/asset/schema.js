@@ -2,14 +2,16 @@ import { z } from 'zod';
 
 export const AssetSchema = z.object( {
   name: z.string(),
-  companyId: z.string(),
-  typeId: z.string()
+  code: z.string(),
+  typeId: z.string(),
+  companyId: z.string()
 } );
 
 export const FilteringSchema = z.object( {
   name: z.string().optional(),
-  companyId: z.string().optional(),
-  typeId: z.string().optional()
+  code: z.string().optional(),
+  typeId: z.string().optional(),
+  companyId: z.string().optional()
 } );
 
 export const SortingSchema = z.object( {
