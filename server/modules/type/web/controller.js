@@ -33,7 +33,7 @@ export class TypeWebController {
 
   showTypesPage = async ( req, res, next ) => {
     try {
-      const types = await this.typeService.getTypes( { companyId: req.params.company, ...req.query } );
+      const types = await this.typeService.getTypes( { ...req.query, userId: req.user.id } );
       res.render( 'type/types', { data: { types } } );
     } catch ( error ) {
       next( error );

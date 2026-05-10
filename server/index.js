@@ -12,6 +12,8 @@ import { assetApiRouter } from './modules/asset/api/router.js';
 import { assetWebRouter } from './modules/asset/web/router.js';
 import { companyApiRouter } from './modules/company/api/router.js';
 import { companyWebRouter } from './modules/company/web/router.js';
+import { employeeApiRouter } from './modules/employee/api/router.js';
+import { employeeWebRouter } from './modules/employee/web/router.js';
 import { typeApiRouter } from './modules/type/api/router.js';
 import { typeWebRouter } from './modules/type/web/router.js';
 import { userApiRouter } from './modules/user/api/router.js';
@@ -44,6 +46,9 @@ app.use( '/', typeWebRouter );
 
 app.use( '/api', assetApiRouter );
 app.use( '/', assetWebRouter );
+
+app.use( '/api', employeeApiRouter );
+app.use( '/', employeeWebRouter );
 
 app.use( '/', ( req, res ) => res.redirect( '/companies' ) );
 

@@ -25,10 +25,6 @@ export class TypeService {
     return { data, total, ...pagination };
   };
 
-  getType = async query => {
-    return await this.typeRepository.findOne( query );
-  };
-
   getTypeById = async id => {
     return await this.typeRepository.findById( id );
   };

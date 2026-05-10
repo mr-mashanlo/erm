@@ -10,7 +10,6 @@ const assetWebRouter = Router( { mergeParams: true } );
 
 assetWebRouter.get( '/assetss', isAuth, assetWebController.showAssetsPage );
 assetWebRouter.post( '/assetss', isAuth, checkRoles( [ 'ADMIN' ] ), validate( AssetSchema ), assetWebController.createAsset );
-
 assetWebRouter.get( '/assetss/:id', isAuth, assetWebController.showAssetPage );
 assetWebRouter.post( '/assetss/:id', isAuth, checkRoles( [ 'ADMIN' ] ), validate( AssetSchema ), assetWebController.updateAsset );
 assetWebRouter.post( '/assetss/:id/delete', isAuth, checkRoles( [ 'ADMIN' ] ), assetWebController.deleteAsset );

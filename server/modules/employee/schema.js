@@ -1,21 +1,11 @@
 import { z } from 'zod';
 
-export const AssetSchema = z.object( {
-  name: z.string(),
-  code: z.string(),
-  typeId: z.string(),
-  employeeId: z.string(),
-  companyId: z.string(),
-  currentEmployeeId: z.string().optional(),
-  assetAssignId: z.string().optional()
+export const EmployeeSchema = z.object( {
+  name: z.string()
 } );
 
 export const FilteringSchema = z.object( {
-  name: z.string().optional(),
-  code: z.string().optional(),
-  typeId: z.string().optional(),
-  employeeId: z.string().optional(),
-  companyId: z.string().optional()
+  name: z.string().optional()
 } );
 
 export const SortingSchema = z.object( {

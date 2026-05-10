@@ -1,13 +1,16 @@
 export class AssetApiController {
 
-  constructor( assetService ) {
+  constructor( assetService, assetAssignService ) {
     this.assetService = assetService;
+    this.assetAssignService = assetAssignService;
   };
 
   createAsset = async ( req, res, next ) => {
     try {
-      const document = await this.assetService.createAsset( req.body );
-      res.json( document );
+      const { employeeId, ...body } = req.body;
+      const asset = await this.assetService.createAsset( { ...body, userId: req.user.id } );
+      await this.assetAssignService.createAssetAssign( { assetId: asset.id, employeeId } );
+      res.json( asset );
     } catch ( error ) {
       next( error );
     }
@@ -24,7 +27,7 @@ export class AssetApiController {
 
   getAssets = async ( req, res, next ) => {
     try {
-      const document = await this.assetService.getAssets( req.query );
+      const document = await this.assetService.getAssets( { ...req.query, userId: req.user.id } );
       res.json( document );
     } catch ( error ) {
       next( error );

@@ -22,16 +22,22 @@ export class AssetRepository {
       orderBy: sort,
       take: pagination.limit,
       skip: pagination.skip,
-      include: { company: true, type: true }
+      include: { company: true, type: true, assetAssign: { include: { employee: true }, orderBy: { id: 'desc' } } }
     } );
   };
 
   findOne = async where => {
-    return await this.prisma.company.findFirst( { where } );
+    return await this.prisma.company.findFirst( {
+      where,
+      include: { assetAssign: { orderBy: { id: 'desc' } } }
+    } );
   };
 
   findById = async id => {
-    return await this.prisma.asset.findUnique( { where: { id } } );
+    return await this.prisma.asset.findUnique( {
+      where: { id },
+      include: { assetAssign: { orderBy: { id: 'desc' } } }
+    } );
   };
 
   update = async ( where, data ) => {

@@ -25,10 +25,6 @@ export class CompanyService {
     return { data, total, ...pagination };
   };
 
-  getCompany = async query => {
-    return await this.companyRepository.findOne( query );
-  };
-
   getCompanyById = async id => {
     return await this.companyRepository.findById( id );
   };

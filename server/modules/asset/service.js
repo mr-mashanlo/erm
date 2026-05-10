@@ -25,10 +25,6 @@ export class AssetService {
     return { data, total, ...pagination };
   };
 
-  getCompany = async query => {
-    return await this.companyRepository.findOne( query );
-  };
-
   getAssetById = async id => {
     return await this.assetRepository.findById( id );
   };
