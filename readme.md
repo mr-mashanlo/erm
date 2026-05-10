@@ -39,7 +39,7 @@ docker exec -it <service> <command>
 ### Usefull commands
 ```bash
 # Apply migration
-docker exec -it node npx prisma migrate dev --name init
+docker exec -it node npx prisma migrate dev --name <message>
 
 # Restart server
 docker compose restart server
