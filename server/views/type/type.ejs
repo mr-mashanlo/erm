@@ -17,13 +17,15 @@
     <meta property="og:url" content="">
     <meta name="twitter:image" content="">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme:light)">
+    <meta name="theme-color" content="#18181b" media="(prefers-color-scheme:dark)">
     <link rel="icon" href="/images/favicon.svg" sizes="32x32">
     <link rel="apple-touch-icon" href="/images/favicon.svg">
     <link rel="stylesheet" href="/sources/main.css">
     <script src="/sources/main.js" defer></script>
   </head>
 
-  <body class="text-xs text-zinc-700 bg-zinc-50">
+  <body class="text-xs text-zinc-700 bg-zinc-50 dark:text-zinc-400 dark:bg-zinc-900">
     <main>
       <section class="m-4 sm:m-10">
         <div class="flex items-center gap-4">
@@ -41,9 +43,11 @@
             </svg>
           </button>
           <dialog id="update_modal" class="modal">
-            <div class="modal-box sm:min-w-4xl py-20 sm:px-20 sm:py-35 bg-zinc-50">
-              <h3 class="mb-5 text-xl text-center font-bold">Update type</h3>
-              <%- include( 'update-form', { body: data.type } ); %>
+            <div class="modal-box sm:min-w-4xl sm:min-h-[35rem] p-4 py-20 sm:px-20 sm:py-35 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+              <div class="w-full">
+                <h3 class="mb-5 text-xl text-center font-bold">Update type</h3>
+                <%- include( 'update-form', { body: data.type } ); %>
+              </div>
             </div>
             <form method="dialog" class="modal-backdrop">
               <button>close</button>
@@ -55,9 +59,11 @@
             </svg>
           </button>
           <dialog id="delete_modal" class="modal">
-            <div class="modal-box sm:min-w-4xl py-20 sm:px-20 sm:py-35 bg-zinc-50">
-              <h3 class="mb-5 text-xl text-center font-bold">Delete <%= data.type.name %></h3>
-              <%- include( 'delete-form', { action: `${path}/delete` } ); %>
+            <div class="modal-box sm:min-w-4xl sm:min-h-[35rem] p-4 py-20 sm:px-20 sm:py-35 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+              <div class="w-full">
+                <h3 class="mb-5 text-xl text-center font-bold">Delete <%= data.type.name %></h3>
+                <%- include( 'delete-form', { action: `${path}/delete` } ); %>
+              </div>
             </div>
             <form method="dialog" class="modal-backdrop">
               <button>close</button>
